@@ -1,2 +1,1 @@
-# CART263-EXAMPLE-CLASS-REPO
- EXAMPLE SKELETON REPO FOR CART 263
+Philippe Beauchemin's course repository for CART 263 - Creative Computation II
