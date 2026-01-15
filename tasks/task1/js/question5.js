@@ -1,23 +1,23 @@
 "use strict";
-// QU 4.0
-// fill object
-let colours = {
-    rect1: {
-        r: 0,
-        g: 0,
-        b: 255
-    },
-    rect2: {
-        r: 100,
+// QU 5.0
+let counter = 0;
+
+// orange square
+let square = {
+    w: 20,
+    h: 20,
+    x: 20,
+    y: 30,
+    colour: {
+        r: 255,
         g: 100,
-        b: 255
-    },
-    rect3: {
-        r: 150,
-        g: 150,
-        b: 255
+        b: 0
     }
-}
+};
+
+// ellipse
+let radius = 20;
+let ellipseAlpha = 1;
 
 function setup() {
     console.log("go")
@@ -25,61 +25,45 @@ function setup() {
 }
 
 function draw() {
-    // QU 4.1
     background(0);
-    noStroke();
-    push();
-    fill(colours.rect1.r, colours.rect1.g, colours.rect1.b);
-    rect(0, 0, width / 3, height);
-    pop();
-    push();
-    fill(colours.rect2.r, colours.rect2.g, colours.rect2.b);
-    rect(100, 0, width / 3, height);
-    pop();
-    push();
-    fill(colours.rect3.r, colours.rect3.g, colours.rect3.b);
-    rect(200, 0, width / 3, height);
-    pop();
 
-    checkRect();
+    checkSquareOverlap(mouseX, mouseY, square);
+
+    displaySquare();
+
+    push();
+    translate(width / 2, height / 2);
+    fill(255);
+    ellipse(0, 0, radius);
+    pop();
 }
 
+function displaySquare() {
+    noStroke();
+    push();
+    fill(square.colour.r, square.colour.g, square.colour.b);
+    rect(square.x, square.y, square.w, square.h);
+    pop();
 
-// QU 4.2
-function checkRect() {
+    if (checkSquareOverlap(mouseX, mouseY, square)) {
+        square.colour.g = 180;
+        square.colour.b = 30;
+    }
+    else {
+        square.colour.g = 100;
+        square.colour.b = 0;
+    }
+}
+
+function mouseClicked() {
     // Overlapping rectangle 1
-    if (mouseX > 0 && mouseX < 100) {
-        colours.rect1.r = 255;
-        colours.rect1.g = 255;
-        colours.rect1.b = 255;
+    if (checkSquareOverlap(mouseX, mouseY, square)) {
+        counter += 1;
+        console.log(counter)
     }
-    else {
-        colours.rect1.r = 0;
-        colours.rect1.g = 0;
-        colours.rect1.b = 255;
-    }
+}
 
-    // Overlapping rectangle 2
-    if (mouseX > 100 && mouseX < 200) {
-        colours.rect2.r = 255;
-        colours.rect2.g = 255;
-        colours.rect2.b = 255;
-    }
-    else {
-        colours.rect2.r = 100;
-        colours.rect2.g = 100;
-        colours.rect2.b = 255;
-    }
-
-    // Overlapping rectangle 3
-    if (mouseX > 200 && mouseX < 300) {
-        colours.rect3.r = 255;
-        colours.rect3.g = 255;
-        colours.rect3.b = 255;
-    }
-    else {
-        colours.rect3.r = 150;
-        colours.rect3.g = 150;
-        colours.rect3.b = 255;
-    }
+function checkSquareOverlap(mouseX, mouseY, square) {
+    // Overlapping rectangle 1
+    return ((mouseX > square.x && mouseX < (square.x + square.w)) && (mouseY > square.y && mouseY < (square.y + square.h)));
 }
