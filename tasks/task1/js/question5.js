@@ -17,25 +17,33 @@ let square = {
 
 // ellipse
 let radius = 20;
-let ellipseAlpha = 1;
+let ellipseAlpha = 100;
+let i = 0;
 
 function setup() {
     console.log("go")
     createCanvas(300, 300);
+    background(0);
 }
 
 function draw() {
-    background(0);
 
     checkSquareOverlap(mouseX, mouseY, square);
 
     displaySquare();
 
-    push();
-    translate(width / 2, height / 2);
-    fill(255);
-    ellipse(0, 0, radius);
-    pop();
+    while (i < counter) {
+        if (counter > 0 && counter < 11) {
+            push();
+            fill(255, ellipseAlpha);
+            ellipse(width / 2, height / 2, radius);
+            pop();
+            ellipseAlpha += 5;
+            radius += 20;
+            i++;
+        }
+    }
+
 }
 
 function displaySquare() {
