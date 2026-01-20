@@ -15,22 +15,21 @@ let square = {
     }
 };
 
-// ellipse
-let radius = 20;
-let ellipseAlpha = 100;
-let i = 0;
-
 function setup() {
     console.log("go")
     createCanvas(300, 300);
-    background(0);
 }
 
 function draw() {
+    background(0);
 
     checkSquareOverlap(mouseX, mouseY, square);
 
     displaySquare();
+
+    let i = 0;
+    let radius = 20;
+    let ellipseAlpha = 100;
 
     while (i < counter) {
         if (counter > 0 && counter < 11) {
@@ -63,7 +62,7 @@ function displaySquare() {
     }
 }
 
-function mouseClicked() {
+function mousePressed() {
     // Overlapping rectangle 1
     if (checkSquareOverlap(mouseX, mouseY, square)) {
         counter += 1;
