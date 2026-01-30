@@ -368,7 +368,6 @@ function setup() {
 
     //3C
     let bgColor = "red";
-    let remainder = "0";
 
     //3A
     for (let i = 0; i < 10; i++) {
@@ -380,32 +379,28 @@ function setup() {
         if (col === 0) {
             //3C
             bgColor = "red"; // the instructions state the first column is red, then orange, then yellow, but the reference image has white...
-            remainder = "1";
-
         }
         else if (col === 1) {
             bgColor = "orange";
-            remainder = "2";
         }
         else if (col === 2) {
             bgColor = "yellow";
-            remainder = "0";
         }
 
         for (let j = 0; j < 10; j++) {
             let returnedDiv = customNewBoxCreate(document.querySelector("#new-grid-three"));
-            returnedDiv.style.left = j * 40 + "px";
-            returnedDiv.style.top = verticalAlignment;
+            returnedDiv.style.top = j * 40 + "px";
+            returnedDiv.style.left = verticalAlignment;
             returnedDiv.style.background = bgColor;
-            returnedDiv.textContent = remainder;
+            returnedDiv.textContent = col;
         }
 
 
     }
 
     /***EXPLANATION::
-     * 
-     * 
+     * The value of "col" is the remainder of the operation i/3. At the third column (or fourth including the first one being the zeroest column), the remainder is 0 since 3/3 leaves no remainder. 1/3 leaves a remainder of 1, 2/3 leaves a remainder of 2. 
+     * SCREEN GRAB: task-2-images/part_three_3.PNG
      */
 
     /*************************************** */
