@@ -76,9 +76,6 @@ function setup_C() {
         }
       }
     }
-
-
-
   }
 
 
