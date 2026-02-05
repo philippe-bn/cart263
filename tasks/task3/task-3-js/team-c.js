@@ -98,8 +98,49 @@ function setup_C() {
 
   function aniB(parentCanvas) {
     console.log("in ani-B -teamC");
+    //check with others
 
+    //gradient colours
+    let gradiantColours = [
+      "cyan",
+      "navy",
+      "blue",
+      "purple",
+      "violet",
+      "fuchsia",
+    ];
+
+    let circles = [];
+    let bounds = parentCanvas.getBoundingClientRect();
+    let offset = 30;
+
+    //calls grid of circles
+    for (let i = 0; i < bounds.width / 30; i++) {
+      for (let j = 0; j < bounds.height / 30; j++) {
+        let circle = document.createElement("div");
+        circle.classList.add("TEAM_C_grid");
+        circle.style.left = offset + i * 25 + "px";
+        circle.style.top = offset + j * 25 + "px";
+        circle.style.width = "15px";
+        circle.style.height = "15px";
+        circle.style.opacity = 1;
+        parentCanvas.appendChild(circle);
+        circles.push(circle);
+
+        circle.setAttribute("gradiantchange", 0);
+        circle.addEventListener("mousemove", gradientHandler);
+      }
+    }
+
+    //handles the mouseover/mousemove that triggers the gradient change
+    function gradientHandler() {
+      let gradientAtt = parseInt(this.getAttribute("gradiantchange"));
+      this.setAttribute("gradiantchange", gradientAtt + 1);
+      //help cycling through the gradianColours infinitely
+      this.style.background = gradiantColours[gradientAtt % gradiantColours.length];
+    };
   }
+
   /****************ANI C ************************************ */
   /** PUT ALL YOUR CODE FOR INTERACTIVE PATTERN C INSIDE HERE */
   /****************ANI C************************************ */
