@@ -109,19 +109,12 @@ h5 {
 .TEAM_C_circle {
   border-radius: 25px;
   position: absolute;
-  transform: translate(-50%, -50%);
 }
 
 .TEAM_C_grid {
   border-radius: 10px;
-  background-color: rgb(177, 150, 215);
+  background-color: rgb(9, 70, 30);
   position: absolute;
-}
-
-.TEAM_C_grid:hover {
-  background-color: rgb(225, 217, 235);
-  transform: scale(2);
-  /* transition: transform .2s ease-in-out; */
 }
 
 /*CSS TEAM H**/
