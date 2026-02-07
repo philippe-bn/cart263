@@ -226,11 +226,26 @@ function setup_C() {
   function aniC(parentCanvas) {
     console.log("in ani-C -teamC");
 
+    let drops = [];
+    let bounds = parentCanvas.getBoundingClientRect();
+    let offset = 30;
+
     /*** THIS IS THE CALLBACK FOR KEY DOWN (* DO NOT CHANGE THE NAME *..) */
     windowKeyDownRef = function (e) {
       //code for key down in here
       console.log(e);
       console.log("c-down");
+
+      let droplet = document.createElement("div");
+      droplet.classList.add("TEAM_C_droplet");
+      droplet.style.left = Math.random() * bounds.width - 10 + "px";
+      droplet.style.top = Math.random() * bounds.height - 10 + "px";
+      droplet.style.width = "18px";
+      droplet.style.height = "18px";
+      droplet.style.opacity = 1;
+      parentCanvas.appendChild(droplet);
+      drops.push(droplet);
+
     };
 
     /*** THIS IS THE CALLBACK FOR KEY UP (*DO NOT CHANGE THE NAME..) */
@@ -260,5 +275,74 @@ function setup_C() {
    * **/
   function aniD(parentCanvas) {
     console.log("in ani-D -teamC");
+    // reference code from https://codingtechroom.com/question/make-object-move-in-circle 
+
+    // //gradient colours
+    // let gradiantColours = [
+    //   "rgb(30, 39, 145)",
+    //   "rgb(44, 67, 176)",
+    //   "rgb(51, 100, 192)",
+    //   "rgb(66, 123, 210)",
+    //   "rgb(76, 154, 221)",
+    //   "rgb(100, 182, 238)",
+    // ];
+
+    let circles = [];
+    let bounds = parentCanvas.getBoundingClientRect();
+    let offset = 30;
+
+    //calls grid of circles
+    for (let i = 0; i < bounds.width / 30; i++) {
+      circles.push([]); // create rows
+      for (let j = 0; j < bounds.height / 30; j++) {
+        let circle = document.createElement("div");
+        circle.classList.add("TEAM_C_c_grid");
+        circle.style.left = offset + i * 25 + "px";
+        circle.style.top = offset + j * 25 + "px";
+        circle.style.width = "18px";
+        circle.style.height = "18px";
+        circle.style.opacity = 1;
+        // circle.style.transform = "translate(-50%, -50%)";
+        parentCanvas.appendChild(circle);
+        circles[i].push(circle); // create columns
+
+        // circle.setAttribute("gradiantchange", 1);
+      }
+    }
+
+    // simple ripple animator: compute radial offset on the fly
+    requestAnimationFrame(animate);
+
+    function animate(time) {
+      bounds = parentCanvas.getBoundingClientRect();
+      const cx = bounds.width / 2;
+      const cy = bounds.height / 2;
+
+      const speed = 0.005; // ripple speed
+      const amplitude = 4; // pixels to move in/out
+      const wavelength = 20; // spacing of wavefront
+
+      for (let i = 0; i < circles.length; i++) {
+        for (let j = 0; j < circles[0].length; j++) {
+          const el = circles[i][j]; //circle element
+          const gx = offset + i * 25; //grid x
+          const gy = offset + j * 25; //grid y
+          const dx = gx - cx; // distance x
+          const dy = gy - cy; // distacnme y
+          const baseD = Math.sqrt(dx * dx + dy * dy); // calculates the squareroot for the base distance
+          const angle = Math.atan2(dy, dx); // calculates the angle 
+
+          const phase = time * speed - baseD / wavelength; // calculates the anim phase
+          const r = baseD + Math.sin(phase) * amplitude; // calculates radius
+          const x = cx + r * Math.cos(angle); // calculates x position
+          const y = cy + r * Math.sin(angle); // calvulates y position
+
+          el.style.left = `${x}px`;
+          el.style.top = `${y}px`;
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
   }
 }

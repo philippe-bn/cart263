@@ -117,6 +117,18 @@ h5 {
   position: absolute;
 }
 
+.TEAM_C_droplet {
+  border-radius: 25px;
+  background-color: blue;
+  position: absolute;
+}
+
+.TEAM_C_c_grid {
+  border-radius: 10px;
+  background-color: rgb(30, 39, 145);
+  position: absolute;
+}
+
 /*CSS TEAM H**/
 
 .TEAM_H_box {
