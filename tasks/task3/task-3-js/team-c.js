@@ -253,6 +253,12 @@ function setup_C() {
     let bounds = parentCanvas.getBoundingClientRect();
     let offset = 30;
 
+    // rgba for a white background
+    let r = 255;
+    let g = 255;
+    let b = 255;
+    let a = 1;
+
     /*** THIS IS THE CALLBACK FOR KEY DOWN (* DO NOT CHANGE THE NAME *..) */
     windowKeyDownRef = function (e) {
       //code for key down in here
@@ -264,7 +270,7 @@ function setup_C() {
       droplet.style.left = Math.random() * bounds.width - 10 + "px";
       droplet.style.top = Math.random() * bounds.height - 10 + "px";
       droplet.style.width = "18px";
-      droplet.style.height = "18px";
+      droplet.style.height = "20px";
       droplet.style.opacity = 1;
       parentCanvas.appendChild(droplet);
       drops.push(droplet);
@@ -275,6 +281,28 @@ function setup_C() {
     windowKeyUpRef = function (e) {
       console.log(e);
       console.log("c-up");
+
+      let dropletTwo = document.createElement("div");
+      dropletTwo.classList.add("TEAM_C_droplet_two");
+      dropletTwo.style.left = Math.random() * bounds.width - 10 + "px";
+      dropletTwo.style.top = Math.random() * bounds.height - 10 + "px";
+      dropletTwo.style.width = "9px";
+      dropletTwo.style.height = "11px";
+      dropletTwo.style.opacity = 1;
+      parentCanvas.appendChild(dropletTwo);
+      drops.push(dropletTwo);
+
+      // background starts off white
+      document.querySelector("#ani_canvC_C").style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+
+      // transitions slowly to very dark blue with a nice little purple moment
+      // uses math.max as a protection so that r,g and b don't go under 0
+      r = Math.max(r - 2, 0)
+      g = Math.max(g - 4, 0)
+      b = Math.max(b - 1.5, 0)
+      console.log(r)
+      console.log(g)
+      console.log(b)
     };
     //DO NOT REMOVE
     window.addEventListener("keydown", windowKeyDownRef);
