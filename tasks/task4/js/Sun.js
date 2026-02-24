@@ -1,4 +1,4 @@
-class Sun{
+class Sun {
     constructor(x,y, sunColor){
         this.x = x;
         this.y = y;
