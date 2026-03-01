@@ -66,4 +66,10 @@ class Vector {
             this.mult(max);
         }
     }
+
+    // my creation (or attempted copy of p5's setMag) based on my understanding of magnitude and unit vectors
+    setMag(n) {
+        this.normalize();
+        this.mult(n);
+    }
 }

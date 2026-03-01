@@ -65,8 +65,9 @@ class Fish {
         let mouse = new Vector(mouseX, mouseY);
         // console.log(mouse)
         let dir = Vector.sub(mouse, this.position);
-        dir.normalize();
-        dir.mult(0.1);
+        // dir.normalize();
+        // dir.mult(0.1);
+        dir.setMag(0.1);
         this.acceleration = dir;
 
         this.velocity.add(this.acceleration);
