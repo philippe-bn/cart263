@@ -60,6 +60,7 @@ function createFish() {
 function animateFish(){
     for (let fish of aquarium.school) {
         fish.move();
+        fish.checkEdges();
         fish.renderFish();
         // assign the mouseX and mouse Y position for the fish to follow
         document.addEventListener("mousemove", assign);
@@ -75,7 +76,7 @@ function assign(e) {
     let mouseX = e.clientX;
     let mouseY = e.clientY;
     for (let fish of aquarium.school) {
-        fish.follow(mouseX, mouseY);
+        fish.seek(mouseX, mouseY);
     }
 }
 
