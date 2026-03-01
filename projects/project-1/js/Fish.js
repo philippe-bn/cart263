@@ -9,8 +9,8 @@ class Fish {
         this.vx = Math.random() * 2 + 1;
         this.vy = Math.random() * 2 + 1;
         this.velocity = new Vector(this.vx, this.vy);
-        this.acceleration = new Vector(-0.001, 0.01);
-        this.topSpeed = 10;
+        // this.acceleration = new Vector(Math.random()/100, Math.random()/100);
+        this.topSpeed = 3;
         this.fishBody = document.createElement("div")
     }
 
@@ -27,10 +27,11 @@ class Fish {
         document.getElementsByClassName("water")[0].appendChild(this.fishBody);
     }
     
-    // Move the squirrel according to its velocity
+    // Move the fish according to its velocity
     move() {
-        this.velocity.add(this.acceleration);
-        this.velocity.limit(this.topSpeed);
+        // this.acceleration = new Vector(Math.random()/-100, Math.random()/100);
+        // this.velocity.add(this.acceleration);
+        // this.velocity.limit(this.topSpeed);
 
         this.position.add(this.velocity);
 
@@ -58,9 +59,20 @@ class Fish {
             this.velocity.y *= -1; // flips to negative so the fish goes down now
             this.position.y += this.velocity.y;
         }
+    }
 
-        this.fishBody.style.left = this.position.x + "px";
-        this.fishBody.style.top = this.position.y + "px";
+    follow(mouseX, mouseY) {
+        let mouse = new Vector(mouseX, mouseY);
+        // console.log(mouse)
+        let dir = Vector.sub(mouse, this.position);
+        dir.normalize();
+        dir.mult(0.1);
+        this.acceleration = dir;
+
+        this.velocity.add(this.acceleration);
+        this.velocity.limit(this.topSpeed);
+
+        this.position.add(this.velocity);
     }
 
 }

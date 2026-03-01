@@ -47,9 +47,9 @@ function createFish() {
         let y = Math.random() * (parseInt(aquarium.water.waterDiv.style.height) - 40) + 20;
         let size = Math.random() * 10 + 10;
         let color = {
-            r: Math.random() * 100,
-            g: Math.random() * 100,
-            b: 255,
+            r: Math.random() * 255,
+            g: Math.random() * 200,
+            b: Math.random() * 255,
         }
         let fish = new Fish(x, y, size, color);
         aquarium.school.push(fish);
@@ -61,12 +61,24 @@ function animateFish(){
     for (let fish of aquarium.school) {
         fish.move();
         fish.renderFish();
+        // assign the mouseX and mouse Y position for the fish to follow
+        document.addEventListener("mousemove", assign);
     }
     requestAnimationFrame(animateFish);
 }
 
 createFish();
 animateFish();
+
+function assign(e) {
+    // imitates p5's mouseX and mouseY
+    let mouseX = e.clientX;
+    let mouseY = e.clientY;
+    for (let fish of aquarium.school) {
+        fish.follow(mouseX, mouseY);
+    }
+}
+
 }
 
 // let flock;
