@@ -9,6 +9,8 @@ class Fish {
         this.vx = Math.random() * 2 + 1;
         this.vy = Math.random() * 2 + 1;
         this.velocity = new Vector(this.vx, this.vy);
+        this.acceleration = new Vector(-0.001, 0.01);
+        this.topSpeed = 10;
         this.fishBody = document.createElement("div")
     }
 
@@ -27,6 +29,9 @@ class Fish {
     
     // Move the squirrel according to its velocity
     move() {
+        this.velocity.add(this.acceleration);
+        this.velocity.limit(this.topSpeed);
+
         this.position.add(this.velocity);
 
         let bottomOfAquarium = document.querySelector(".water").getBoundingClientRect().height;
