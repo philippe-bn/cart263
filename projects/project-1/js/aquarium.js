@@ -61,6 +61,7 @@ function animateFish(){
     for (let fish of aquarium.school) {
         fish.move();
         fish.checkEdges();
+        fish.separate(aquarium.school);
         fish.renderFish();
         // assign the mouseX and mouse Y position for the fish to follow
         document.addEventListener("mousemove", assign);
