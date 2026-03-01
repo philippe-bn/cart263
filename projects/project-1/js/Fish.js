@@ -3,10 +3,12 @@ class Fish {
     constructor(x, y, size, color) {
         this.x = x;
         this.y = y;
+        this.position = new Vector(this.x,this.y);
         this.size = size;
         this.color = color;
         this.vx = Math.random() * 2 + 1;
         this.vy = Math.random() * 2 + 1;
+        this.velocity = new Vector(this.vx, this.vy);
         this.fishBody = document.createElement("div")
     }
 
@@ -16,8 +18,8 @@ class Fish {
         this.fishBody.style.height = this.size + "px";
         this.fishBody.style.borderRadius = this.size + "px";
         this.fishBody.style.background = `rgb(${this.color.r},${this.color.g},${this.color.b})`;
-        this.fishBody.style.left = this.x + "px";
-        this.fishBody.style.top = this.y + "px";
+        this.fishBody.style.left = this.position.x + "px";
+        this.fishBody.style.top = this.position.y + "px";
 
         //add to the DOM
         document.getElementsByClassName("water")[0].appendChild(this.fishBody);
@@ -25,36 +27,35 @@ class Fish {
     
     // Move the squirrel according to its velocity
     move() {
-        this.x += this.vx;
-        this.y += this.vy;
+        this.position.add(this.velocity);
 
-        let bottomOfAquarium = document.querySelector(".water").getBoundingClientRect().height
-        let rightOfAquarium = document.querySelector(".water").getBoundingClientRect().width
+        let bottomOfAquarium = document.querySelector(".water").getBoundingClientRect().height;
+        let rightOfAquarium = document.querySelector(".water").getBoundingClientRect().width;
 
         // Bounce off left edge
-        if (this.x <= 0) {
-            this.vx = this.vx * -1; // flips to positive so the fish goes right now
+        if (this.position.x <= 0) {
+            this.velocity.x = this.velocity.x * -1; // flips to positive so the fish goes right now
         }
         
         // Bounce off right edge
-        if (this.x + this.size >= rightOfAquarium) {
-            this.vx *= -1; // flips to negative so the fish goes left now
+        if (this.position.x + this.size >= rightOfAquarium) {
+            this.velocity.x *= -1; // flips to negative so the fish goes left now
         }
 
         // Bounce off bottom edge
-        if (this.y + this.size >= bottomOfAquarium) {
-            this.vy *= -1; // flips to negative so the fish goes up now
-            this.y += this.vy;
+        if (this.position.y + this.size >= bottomOfAquarium) {
+            this.velocity.y *= -1; // flips to negative so the fish goes up now
+            this.position.y += this.velocity.y;
         }
 
         // Bounce off top edge of water
-        if (this.y + (this.size / 2) < 0) {
-            this.vy *= -1; // flips to negative so the fish goes down now
-            this.y += this.vy;
+        if (this.position.y + (this.size / 2) < 0) {
+            this.velocity.y *= -1; // flips to negative so the fish goes down now
+            this.position.y += this.velocity.y;
         }
 
-        this.fishBody.style.left = this.x + "px";
-        this.fishBody.style.top = this.y + "px";
+        this.fishBody.style.left = this.position.x + "px";
+        this.fishBody.style.top = this.position.y + "px";
     }
 
 }
