@@ -57,26 +57,33 @@ class Fish {
         let bottomOfAquarium = document.querySelector(".water").getBoundingClientRect().height;
         let rightOfAquarium = document.querySelector(".water").getBoundingClientRect().width;
 
-        // Bounce off left edge
-        if (this.position.x <= 0) {
-            this.velocity.x = this.velocity.x * -1; // flips to positive so the fish goes right now
-        }
-        
-        // Bounce off right edge
-        if (this.position.x + this.size >= rightOfAquarium) {
-            this.velocity.x *= -1; // flips to negative so the fish goes left now
+        let dir = null;
+
+        // Steer off left edge and right edge
+        if (this.position.x - this.size <= 0) {
+            // this.velocity.x = this.velocity.x * -1; // flips to positive so the fish goes right now
+            dir = new Vector(this.topSpeed, this.velocity.y)
+        } else if (this.position.x + this.size*4 >= rightOfAquarium) {
+            // this.velocity.x *= -1; // flips to negative so the fish goes left now
+            dir = new Vector(-this.topSpeed, this.velocity.y)
         }
 
-        // Bounce off bottom edge
-        if (this.position.y + this.size >= bottomOfAquarium) {
+        // Bounce off bottom edge and steer off top edge
+        if (this.position.y + this.size*2 >= bottomOfAquarium) {
             this.velocity.y *= -1; // flips to negative so the fish goes up now
             this.position.y += this.velocity.y;
+            // dir = new Vector(this.velocity.x, -this.topSpeed)
+        } else if (this.position.y + (this.size / 2) < 0) {
+            // this.velocity.y *= -1; // flips to negative so the fish goes down now
+            // this.position.y += this.velocity.y;
+            dir = new Vector(this.velocity.x, this.topSpeed)
         }
 
-        // Bounce off top edge of water
-        if (this.position.y + (this.size / 2) < 0) {
-            this.velocity.y *= -1; // flips to negative so the fish goes down now
-            this.position.y += this.velocity.y;
+        if (dir !== null) {
+            dir.setMag(this.topSpeed);
+            let steer = Vector.sub(dir, this.velocity);
+            steer.limit(this.maxForce);
+            this.applyForce(steer);
         }
     }
 
