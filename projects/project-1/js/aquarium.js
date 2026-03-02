@@ -64,7 +64,7 @@ function animateFish(){
         fish.separate(aquarium.school);
         fish.renderFish();
         // assign the mouseX and mouse Y position for the fish to follow
-        document.addEventListener("mousemove", assign);
+        document.querySelector(".water").addEventListener("mousemove", assign);
     }
     requestAnimationFrame(animateFish);
 }
