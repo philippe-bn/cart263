@@ -10,6 +10,10 @@ class Fish {
         this.vy = Math.random() * 2 + 1;
         this.velocity = new Vector(this.vx, this.vy);
         // this.acceleration = new Vector(Math.random()/100, Math.random()/100);
+        /*
+        * "Motion 101" adapted from The Nature of Code, chapter 1
+        * https://natureofcode.com/vectors/#motion-with-vectors 
+        */
         this.acceleration = new Vector(0,0);
         this.topSpeed = 2.5;
         this.maxForce = 0.2;
@@ -45,6 +49,9 @@ class Fish {
     }
     
     // Move the fish according to its velocity
+    /*
+    * Adapted from The Nature of Code, chapter 5, example 5.1 "Seeking a Target"
+    */
     move() {
         // this.acceleration = new Vector(Math.random()/-100, Math.random()/100);
         this.velocity.add(this.acceleration);
@@ -57,6 +64,10 @@ class Fish {
         let bottomOfAquarium = document.querySelector(".water").getBoundingClientRect().height;
         let rightOfAquarium = document.querySelector(".water").getBoundingClientRect().width;
 
+        /* 
+        * "Stay Within Walls" Steering Behaviour adapted from The Nature of Code, chapter 5, example 5.3
+        * https://editor.p5js.org/natureofcode/sketches/fGNwVP3h7
+        */ 
         let dir = null;
 
         // Steer off left edge and right edge
@@ -87,10 +98,17 @@ class Fish {
         }
     }
 
+    /*
+    * Adapted from The Nature of Code, chapter 2, example 2.1 "Forces"
+    * https://natureofcode.com/forces/#creating-forces 
+    */
     applyForce(force) {
         this.acceleration.add(force);
     }
 
+    /*
+    * "Seek" and "steer" behaviour adapted from The Nature of Code, chapter 5, example 5.1 "Seeking a Target"
+    */
     seek(mouseX, mouseY) {
         let mouse = new Vector(mouseX, mouseY);
         // console.log(mouse)
@@ -109,6 +127,9 @@ class Fish {
         // this.position.add(this.velocity);
     }
 
+    /*
+    * "Separate" behaviour adapted from The Nature of Code, chapter 5, "Complex Systems"
+    */
     separate(school) {
         // This variable specifies how close is too close.
         let desiredSeparation = 30;
@@ -134,11 +155,6 @@ class Fish {
     }
 
 } // class Fish
-
-
-function distance(x0, y0, x1, y1) {
-  return Math.hypot(x1 - x0, y1 - y0);
-}
 
 // class Boid {
 //   constructor(x, y) {
