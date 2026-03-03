@@ -63,21 +63,28 @@ function animateFish(){
         fish.checkEdges();
         fish.separate(aquarium.school);
         fish.renderFish();
-        // assign the mouseX and mouse Y position for the fish to follow
-        document.querySelector(".water").addEventListener("mousemove", assign);
     }
+    document.querySelector(".water").addEventListener("mousemove", assign); // when the mouse moves, the seek behaviour is activated (seek state)
     requestAnimationFrame(animateFish);
 }
 
 createFish();
 animateFish();
 
+/*
+* Assigns the mouse X and mouse Y position as the target for the fish to follow, activates seek behaviour
+*/
 function assign(e) {
     // imitates p5's mouseX and mouseY
     let mouseX = e.clientX;
     let mouseY = e.clientY;
+    /*
+    * Optimized by following the method of taking the mouse Vector out of the loop, The Nature of Code, ch 5, "Algorithmic Efficiency"
+    https://natureofcode.com/autonomous-agents/#algorithmic-efficiency-or-why-does-my-sketch-run-so-slowly
+    */
+    let mouse = new Vector(mouseX, mouseY);
     for (let fish of aquarium.school) {
-        fish.seek(mouseX, mouseY);
+        fish.seek(mouse);
     }
 }
 

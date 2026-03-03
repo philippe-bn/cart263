@@ -109,8 +109,7 @@ class Fish {
     /*
     * "Seek" and "steer" behaviour adapted from The Nature of Code, chapter 5, example 5.1 "Seeking a Target"
     */
-    seek(mouseX, mouseY) {
-        let mouse = new Vector(mouseX, mouseY);
+    seek(mouse) {
         // console.log(mouse)
         let dir = Vector.sub(mouse, this.position);
         // dir.normalize();
