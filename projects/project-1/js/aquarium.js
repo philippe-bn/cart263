@@ -43,8 +43,8 @@ createAndRenderTheAquarium();
 // create fish
 function createFish() {
     for (let i = 0; i < aquarium.numFish; i++) {
-        let x = Math.random() * (parseInt(aquarium.water.waterDiv.style.width) - 40) + 20;
-        let y = Math.random() * (parseInt(aquarium.water.waterDiv.style.height) - 40) + 20;
+        let x = Math.random() * (parseInt(aquarium.water.waterDiv.style.width) - 80) + 20;
+        let y = Math.random() * (parseInt(aquarium.water.waterDiv.style.height) - 80) + 20;
         let size = Math.random() * 10 + 10;
         let color = {
             r: Math.random() * 255,
