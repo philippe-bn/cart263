@@ -1,6 +1,10 @@
-window.onload = goApp;
-
-async function goApp(){
-console.log("hello fetch")
-
+window.onload = goFetch;
+  async function goFetch(){
+  try {
+        let response = await fetch('../files/tests.json');
+        let data = await response.json();
+  }
+  catch(err) { 
+      console.log(err)
+  }
 }
