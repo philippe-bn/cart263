@@ -65,6 +65,7 @@ function animateFish(){
         fish.renderFish();
     }
     document.querySelector(".water").addEventListener("mousemove", assign); // when the mouse moves, the seek behaviour is activated (seek state)
+    document.querySelector(".water").addEventListener("touchstart", assign); // when the mouse moves, the seek behaviour is activated (seek state)
     requestAnimationFrame(animateFish);
 }
 
