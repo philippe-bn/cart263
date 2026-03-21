@@ -18,10 +18,6 @@ let aquarium = {
         // the water element
         waterDiv: document.createElement("div"),
     },
-    touchCanvas: {
-        // canvas for touch detection
-        canvas: document.createElement("canvas"),
-    },
 };
 
 function createAndRenderTheAquarium(){
@@ -38,22 +34,11 @@ function createAndRenderTheAquarium(){
     )`;
     document.getElementsByTagName("main")[0].appendChild(aquarium.water.waterDiv);
 
-    aquarium.touchCanvas.canvas.setAttribute("id", "canvas");
-    // aquarium.touchCanvas.canvas.style.left = 40 + "px";
-    // aquarium.touchCanvas.canvas.style.top = 40 + "px";
-    // aquarium.touchCanvas.canvas.style.width = window.innerWidth - 80 + "px";
-    // aquarium.touchCanvas.canvas.style.height = window.innerHeight - 80 + "px";
-    aquarium.touchCanvas.canvas.style.touchAction = "none";
-    document.getElementsByTagName("main")[0].appendChild(aquarium.touchCanvas.canvas);
-
     // create algae
     // create bubbles?
 }
 
 createAndRenderTheAquarium();
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-ongoingTouches = new Map();
 
 // create fish
 function createFish() {
@@ -79,7 +64,7 @@ function animateFish(){
         fish.separate(aquarium.school);
         fish.renderFish();
     }
-    document.querySelector(".water").addEventListener("pointerdown", assign); // when the mouse moves, the seek behaviour is activated (seek state)
+    document.querySelector(".water").addEventListener("pointermove", assign); // when the mouse moves, the seek behaviour is activated (seek state)
     // document.querySelector(".water").addEventListener("touchmove", assignTouch); // when the touch moves, the seek behaviour is activated (seek state)
     requestAnimationFrame(animateFish);
 }
@@ -96,8 +81,6 @@ function assign(e) {
         pageX: e.pageX,
         pageY: e.pageY,  
     }
-    ongoingTouches.set(e.pointerId, touch);
-
     let mouseX = touch.pageX;
     let mouseY = touch.pageY;
     /*
@@ -108,7 +91,6 @@ function assign(e) {
     for (let fish of aquarium.school) {
         fish.seek(mouse);
     }
-}
 }
 
 // function assignTouch(e) {
@@ -137,6 +119,8 @@ function assign(e) {
 //         }        
 //     }
 // }
+
+}
 
 // let flock;
 
