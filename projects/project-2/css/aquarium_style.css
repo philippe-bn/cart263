@@ -1,0 +1,23 @@
+body {
+    padding: 0;
+    margin: 0;
+    background-color: black;
+}
+
+.water {
+    position: relative;
+    padding: 0;
+    margin: 0;
+}
+
+.fish {
+    padding: 0;
+    margin: 0;
+    position: absolute;
+}
+
+.tail {
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
