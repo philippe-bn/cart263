@@ -77,11 +77,12 @@ animateFish();
 */
 function assign(e) {
     // imitates p5's mouseX and mouseY
-    const touch = {
+    let touch = {
         pageX: e.pageX,
         pageY: e.pageY,  
     }
     let mouseX = touch.pageX;
+    console.log(mouseX)
     let mouseY = touch.pageY;
     /*
     * Optimized by following the method of taking the mouse Vector out of the loop, The Nature of Code, ch 5, "Algorithmic Efficiency"
