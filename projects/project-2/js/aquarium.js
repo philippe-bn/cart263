@@ -18,6 +18,10 @@ let aquarium = {
         // the water element
         waterDiv: document.createElement("div"),
     },
+    touchCanvas: {
+        // canvas for touch detection
+        canvas: document.createElement("canvas"),
+    },
 };
 
 function createAndRenderTheAquarium(){
@@ -34,11 +38,22 @@ function createAndRenderTheAquarium(){
     )`;
     document.getElementsByTagName("main")[0].appendChild(aquarium.water.waterDiv);
 
+    aquarium.touchCanvas.canvas.setAttribute("id", "canvas");
+    // aquarium.touchCanvas.canvas.style.left = 40 + "px";
+    // aquarium.touchCanvas.canvas.style.top = 40 + "px";
+    // aquarium.touchCanvas.canvas.style.width = window.innerWidth - 80 + "px";
+    // aquarium.touchCanvas.canvas.style.height = window.innerHeight - 80 + "px";
+    aquarium.touchCanvas.canvas.style.touchAction = "none";
+    document.getElementsByTagName("main")[0].appendChild(aquarium.touchCanvas.canvas);
+
     // create algae
     // create bubbles?
 }
 
 createAndRenderTheAquarium();
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+ongoingTouches = new Map();
 
 // create fish
 function createFish() {
@@ -64,8 +79,8 @@ function animateFish(){
         fish.separate(aquarium.school);
         fish.renderFish();
     }
-    document.querySelector(".water").addEventListener("mousemove", assign); // when the mouse moves, the seek behaviour is activated (seek state)
-    document.querySelector(".water").addEventListener("touchstart", assign); // when the mouse moves, the seek behaviour is activated (seek state)
+    document.querySelector(".water").addEventListener("pointerdown", assign); // when the mouse moves, the seek behaviour is activated (seek state)
+    // document.querySelector(".water").addEventListener("touchmove", assignTouch); // when the touch moves, the seek behaviour is activated (seek state)
     requestAnimationFrame(animateFish);
 }
 
@@ -77,8 +92,14 @@ animateFish();
 */
 function assign(e) {
     // imitates p5's mouseX and mouseY
-    let mouseX = e.clientX;
-    let mouseY = e.clientY;
+    const touch = {
+        pageX: e.pageX,
+        pageY: e.pageY,  
+    }
+    ongoingTouches.set(e.pointerId, touch);
+
+    let mouseX = touch.pageX;
+    let mouseY = touch.pageY;
     /*
     * Optimized by following the method of taking the mouse Vector out of the loop, The Nature of Code, ch 5, "Algorithmic Efficiency"
     https://natureofcode.com/autonomous-agents/#algorithmic-efficiency-or-why-does-my-sketch-run-so-slowly
@@ -88,8 +109,34 @@ function assign(e) {
         fish.seek(mouse);
     }
 }
-
 }
+
+// function assignTouch(e) {
+//     e.preventDefault();
+
+//     for (const changedTouch of e.changedTouches) {
+//         console.log(e.changedTouches)
+//         const touch = ongoingTouches.get(changedTouch.identifier);
+//         ongoingTouches.set(changedTouch.identifier, newTouch);
+    
+//     //     if (!touch) {
+//     //         console.error(`Move: Could not find touch ${changedTouch.identifier}`);
+//     //         continue;
+//     //     }
+
+//         const newTouch = {
+//             pageX: changedTouch.pageX,
+//             pageY: changedTouch.pageY,
+//         };
+
+//         let touchX = changedTouch.pageX
+//         let touchY = changedTouch.pageY
+//         let finger = new Vector(touchX, touchY);
+//         for (let fish of aquarium.school) {
+//             fish.seek(finger);
+//         }        
+//     }
+// }
 
 // let flock;
 
