@@ -43,6 +43,7 @@ export class PlanetC {
         //STEP 2: 
         //TODO: Add from 1 to 3 orbiting moons to the planet group.
         const moonSphere = new THREE.SphereGeometry(0.5, 32, 32);
+        // https://github.com/mrdoob/three.js/blob/dev/examples/textures/planets/moon_1024.jpg
         this.moon_texture.colorSpace = THREE.SRGBColorSpace;
         const moonRock = new THREE.MeshStandardMaterial({map: this.moon_texture});
         const medievalMoon1 = new THREE.Mesh(moonSphere, moonRock);
