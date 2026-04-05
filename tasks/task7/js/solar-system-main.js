@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { Sun } from './Sun.js';
 import { PlanetA } from './TeamA.js';
 import { PlanetB } from './TeamB.js';
@@ -68,10 +69,17 @@ const planetB = new PlanetB(scene, 15, 0.005);
 planets.push(planetB);
 
 // // Team C's planet
-const loader = new THREE.TextureLoader();
-const grass_texture = await loader.loadAsync('textures/grass-2500-mm-architextures.jpg');
-const moon_texture = await loader.loadAsync('textures/moon_1024.jpg');
-const planetC = new PlanetC(scene, 22, 0.003, grass_texture, moon_texture);
+const loaderTeamC = new THREE.TextureLoader();
+const grass_texture = await loaderTeamC.loadAsync('textures/grass-2500-mm-architextures.jpg');
+const moon_texture = await loaderTeamC.loadAsync('textures/moon_1024.jpg');
+let teamCTextures = []
+teamCTextures.push(grass_texture)
+teamCTextures.push(moon_texture)
+const gltfLoaderTeamC = new GLTFLoader();
+let sheepModel = await gltfLoaderTeamC.loadAsync("models/sheep/scene.gltf");
+let teamCModels = []
+teamCModels.push(sheepModel)
+const planetC = new PlanetC(scene, 22, 0.003, teamCTextures, teamCModels);
 planets.push(planetC);
 
 // // Team D's planet
