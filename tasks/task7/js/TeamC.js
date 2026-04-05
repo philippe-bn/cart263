@@ -78,11 +78,8 @@ export class PlanetC {
             this.sheepModel.castShadow = true;
             this.sheepModel.receiveShadow = true;
         this.sheepModel.scale.set(.15,.15,.15)
-        // this.sheepModel.position.y = 1.4;
-        // this.sheepModel.position.z = 0;
-        // this.sheepModel.position.x = 0;
         this.group.add(this.sheepModel);
-        this.sheepModel.angle = Math.random() * Math.PI * 2;
+        this.sheepModel.angle = Math.random() * Math.PI * 2; // I know this is probably not needed but the orbit needs an angle
         this.sheepModel.rotation.set(0, -1.57, 1.57); // to rotate 90 degrees to get it sideways??
         //STEP 4:
         //TODO: Use raycasting in the click() method below to detect clicks on the models, and make an animation happen when a model is clicked.
@@ -118,7 +115,7 @@ export class PlanetC {
         this.medievalMoon3.position.y = Math.cos(this.medievalMoon3.angle) * this.orbitRadius/3;
         this.medievalMoon3.position.z = Math.sin(this.medievalMoon3.angle) * this.orbitRadius/3;
 
-        this.sheepModel.angle += (delta * 0.5) * 6 * delta * 30;
+        this.sheepModel.angle += (delta * 0.5) * 6 * delta * 30; // I just need it horizontal, at the planet's radius, going in a circle around the planet at the same speed as the planet is turning, and rotating itself accordingly; I don't understand why it's so hard to keep track of its angle
         this.sheepModel.position.x = Math.cos(this.sheepModel.angle) * -1.5; // 1.5 is planet radius
         this.sheepModel.position.z = Math.sin(this.sheepModel.angle) * 1.5; // 1.5 is planet radius
         this.sheepModel.rotation.y += delta * 0.5; // match planet rotation speed
