@@ -1,69 +1,61 @@
-class Fish {
+import * as THREE from 'three';
 
-    constructor(x, y, size, color) {
+export class Fish {
+    constructor(scene, x, y, z, aquariumModels) {
+        this.scene = scene;
         this.x = x;
         this.y = y;
-        this.position = new Vector(this.x,this.y);
-        this.size = size;
-        this.color = color;
+        this.z = z;
+        // this.position = new Vector(this.x,this.y);
+        this.position = new THREE.Vector3(this.x, this.y, this.z);
+        // console.log(this.position) // here, it works
+        // this.size = size;
+        // this.color = color;
+        this.models = aquariumModels;
         this.vx = Math.random() * 2 + 1;
+        this.vx = map_range(this.vx, 1, 2, -1, 1)
         this.vy = Math.random() * 2 + 1;
-        this.velocity = new Vector(this.vx, this.vy);
-        // this.acceleration = new Vector(Math.random()/100, Math.random()/100);
+        this.vy = map_range(this.vy, 1, 2, -1, 1)
+        this.vz = Math.random() * 2 + 1;
+        this.vz = map_range(this.vz, 1, 2, -1, 1)
+        this.velocity = new THREE.Vector3(this.vx, this.vy, this.vz);
         /*
         * "Motion 101" adapted from The Nature of Code, chapter 1
         * https://natureofcode.com/vectors/#motion-with-vectors 
         */
-        this.acceleration = new Vector(0,0);
-        this.topSpeed = 2.5;
+        this.acceleration = new THREE.Vector3(0,0,0);
+        this.topSpeed = 0.05;
+        this.topVelocity = new THREE.Vector3(this.topSpeed, this.topSpeed, this.topSpeed)
         this.maxForce = 0.2;
 
-        this.fishBody = document.createElement("div");
-        this.fishTail = document.createElement("div");
-    }
+        // from Oliver Cooke on Sketchfab, standard license
+        this.fishModel = this.models[0].scene.children[0];
+            this.fishModel.castShadow = true;
+            this.fishModel.receiveShadow = true;
+        this.fishModel.scale.set(10,10,10);
+        this.fishModel.position.x = this.position.x
+        this.fishModel.position.y = this.position.y
+        this.fishModel.position.z = this.position.z
 
-    renderFish() {
-        this.fishBody.classList.add("fish");
-        this.fishBody.style.width = this.size*2 + "px";
-        this.fishBody.style.height = this.size + "px";
-        this.fishBody.style.borderRadius = "90%";
-        this.fishBody.style.background = `rgb(${this.color.r},${this.color.g},${this.color.b})`;
-        this.fishBody.style.left = this.position.x + "px";
-        this.fishBody.style.top = this.position.y + "px";
-
-        //add to the DOM
-        document.getElementsByClassName("water")[0].appendChild(this.fishBody);
-
-        this.fishTail.classList.add("tail");
-        this.fishTail.style.width = (this.size + 10)/3.5 + "px";
-        this.fishTail.style.height = `inherit`;
-        this.fishTail.style.borderRadius = "20% 100% 100% 20%";
-        this.fishTail.style.background = `inherit`;
-        this.fishTail.style.alignItems = "last baseline";
-        this.fishTail.style.justifyItems = "center";
-
-        let angle = Math.atan2(this.velocity.y, this.velocity.x);
-        this.fishBody.style.transform = `rotate(${angle}rad)`;
-
-        document.getElementsByClassName("fish")[0].appendChild(this.fishTail);
+        this.scene.add(this.fishModel);
+        this.bounds = 200;
     }
     
     // Move the fish according to its velocity
     /*
     * Adapted from The Nature of Code, chapter 5, example 5.1 "Seeking a Target"
     */
-    move() {
-        // this.acceleration = new Vector(Math.random()/-100, Math.random()/100);
+    update(delta) {
         this.velocity.add(this.acceleration);
-        this.velocity.limit(this.topSpeed);
-        this.position.add(this.velocity);
-        this.acceleration.mult(0);
+        this.velocity.max(this.topVelocity);
+        this.position.add(this.velocity) * delta;
+        // this.acceleration.multiply(0);
+        this.fishModel.position.x = this.position.x
+        this.fishModel.position.y = this.position.y
+        this.fishModel.position.z = this.position.z
     }
 
     checkEdges() {
-        let bottomOfAquarium = document.querySelector(".water").getBoundingClientRect().height;
-        let rightOfAquarium = document.querySelector(".water").getBoundingClientRect().width;
-
         /* 
         * "Stay Within Walls" Steering Behaviour adapted from The Nature of Code, chapter 5, example 5.3
         * https://editor.p5js.org/natureofcode/sketches/fGNwVP3h7
@@ -71,29 +63,36 @@ class Fish {
         let dir = null;
 
         // Steer off left edge and right edge
-        if (this.position.x - this.size <= 0) {
+        if (this.position.x <= -this.bounds) {
             // this.velocity.x = this.velocity.x * -1; // flips to positive so the fish goes right now
-            dir = new Vector(this.topSpeed, this.velocity.y)
-        } else if (this.position.x + this.size*4 >= rightOfAquarium) {
+            dir = new THREE.Vector3(this.topSpeed, this.velocity.y, this.velocity.z)
+        } else if (this.position.x >= this.bounds) {
             // this.velocity.x *= -1; // flips to negative so the fish goes left now
-            dir = new Vector(-this.topSpeed, this.velocity.y)
+            dir = new THREE.Vector3(-this.topSpeed, this.velocity.y, this.velocity.z)
         }
 
-        // Bounce off bottom edge and steer off top edge
-        if (this.position.y + this.size*2 >= bottomOfAquarium) {
-            this.velocity.y *= -1; // flips to negative so the fish goes up now
-            this.position.y += this.velocity.y;
-            // dir = new Vector(this.velocity.x, -this.topSpeed)
-        } else if (this.position.y + (this.size / 2) < 0) {
-            // this.velocity.y *= -1; // flips to negative so the fish goes down now
-            // this.position.y += this.velocity.y;
-            dir = new Vector(this.velocity.x, this.topSpeed)
+        // Steer off bottom edge and steer off top edge
+        if (this.position.y <= -this.bounds) {
+            // the fish goes up now
+            dir = new THREE.Vector3(this.velocity.x, this.topSpeed, this.velocity.z)
+        } else if (this.position.y >= this.bounds) {
+            dir = new THREE.Vector3(this.velocity.x, -this.topSpeed, this.velocity.z)
+        }
+
+        // Steer off front end and back end
+        if (this.position.z <= -this.bounds) {
+            // the fish comes back now
+            dir = new THREE.Vector3(this.velocity.x, this.velocity.y, this.topSpeed)
+        } else if (this.position.z >= this.bounds) {
+            // the fish goes away
+            dir = new THREE.Vector3(this.velocity.x, this.velocity.y, -this.topSpeed)
         }
 
         if (dir !== null) {
-            dir.setMag(this.topSpeed);
-            let steer = Vector.sub(dir, this.velocity);
-            steer.limit(this.maxForce);
+            dir.setLength(this.topSpeed);
+            let steer = new THREE.Vector3();
+            steer.subVectors(dir, this.velocity);
+            steer.max(this.maxForce);
             this.applyForce(steer);
         }
     }
@@ -111,19 +110,14 @@ class Fish {
     */
     seek(mouse) {
         // console.log(mouse)
-        let dir = Vector.sub(mouse, this.position);
-        // dir.normalize();
-        // dir.mult(0.1);
-        dir.setMag(this.topSpeed);
+        let dir = new THREE.Vector3();
+        dir.subVectors(mouse, this.position);
+        dir.setLength(this.topSpeed);
 
-        let steer = Vector.sub(dir, this.velocity);
-        steer.limit(this.maxForce);
+        let steer = new THREE.Vector3()
+        steer.subVectors(dir, this.velocity);
+        steer.max(this.maxForce);
         this.applyForce(steer);
-
-        // this.acceleration = dir;
-        // this.velocity.add(this.acceleration);
-        // this.velocity.limit(this.topSpeed);
-        // this.position.add(this.velocity);
     }
 
     /*
@@ -132,28 +126,37 @@ class Fish {
     separate(school) {
         // This variable specifies how close is too close.
         let desiredSeparation = 30;
-        let sum = new Vector(0,0);
+        let sum = new THREE.Vector3(0,0,0);
         let count = 0;
         for (let other of school) {
             //{!1 .offset} What is the distance between this vehicle and the other vehicle?
-            let d = Vector.dist(this.position, other.position);
+            let d = this.position.distanceTo(other.position);
             if (this !== other && d < desiredSeparation) {
             //{!1} Any code here will be executed if the vehicle is within 20 pixels.
-            let diff = Vector.sub(this.position, other.position);
-            diff.setMag(1/d);
+            let diff = new THREE.Vector3()
+            diff.subVectors(this.position, other.position);
+            diff.setLength(1/d);
             sum.add(diff);
             count++;
             }
         }
         if (count > 0) {
-            sum.setMag(this.topSpeed);
-            let steer = Vector.sub(sum, this.velocity);
-            steer.limit(this.maxForce);
+            sum.setLength(this.topSpeed);
+            let steer = new THREE.Vector3()
+            steer.subVectors(sum, this.velocity);
+            steer.max(this.maxForce);
             this.applyForce(steer);
         }
     }
 
 } // class Fish
+
+// Source - https://stackoverflow.com/a/5650012
+// Posted by Alnitak, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-04-06, License - CC BY-SA 3.0
+function map_range(value, low1, high1, low2, high2) {
+    return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+}
 
 // class Boid {
 //   constructor(x, y) {

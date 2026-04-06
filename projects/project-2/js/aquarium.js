@@ -1,76 +1,59 @@
-window.onload = function () {
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { Fish } from '/js/Fish.js';
+
+// --- Core Setup ---
+const scene = new THREE.Scene();
+scene.background = new THREE.Color("rgb(0, 0, 255)"); // Blue, hexadecimal - water backdrop
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 1000);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+// Controls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.maxDistance = 150;
+controls.minDistance = 20;
+
+// --- Lighting ---
+const ambientLight = new THREE.AmbientLight("rgb(255, 255, 255)"); // Bright ambient to see fish
+scene.add(ambientLight);
+
 // Our aquarium
 let aquarium = {
     numFish: 50,
     school: [],
-
-    //algae
-    //bubbles
-
-    // The water object
-    water: {
-        // the color of the water (background)
-        waterColor: {
-            r: 0,
-            g: 0,
-            b: 255,
-        },
-        // the water element
-        waterDiv: document.createElement("div"),
-    },
 };
 
-function createAndRenderTheAquarium(){
-    // water
-    aquarium.water.waterDiv.classList.add("water");
-    aquarium.water.waterDiv.style.left = 40 + "px";
-    aquarium.water.waterDiv.style.top = 40 + "px";
-    aquarium.water.waterDiv.style.width = window.innerWidth - 80 + "px";
-    aquarium.water.waterDiv.style.height = window.innerHeight - 80 + "px";
-    aquarium.water.waterDiv.style.background = `rgb(
-    ${aquarium.water.waterColor.r},
-    ${aquarium.water.waterColor.g},
-    ${aquarium.water.waterColor.b}
-    )`;
-    document.getElementsByTagName("main")[0].appendChild(aquarium.water.waterDiv);
-
-    // create algae
-    // create bubbles?
+for (let i = 0; i < aquarium.numFish; i++) {
+    let x = Math.random() * 100;
+    x = map_range(x, 0, 100, -100, 100);
+    let y = Math.random() * 100;
+    y = map_range(y, 0, 100, -100, 100);
+    let z = Math.random() * 100;
+    z = map_range(z, 0, 100, -100, 100);
+    // console.log([x,y,z])
+        // let color = {
+        //     r: Math.random() * 255,
+        //     g: Math.random() * 200,
+        //     b: Math.random() * 255,
+        // }
+    const gltfLoader = new GLTFLoader();
+    let fishModel = await gltfLoader.loadAsync("models/animated_low_poly_fish_gltf/scene.gltf");
+    let aquariumModels = []
+    aquariumModels.push(fishModel)
+    let fish = new Fish(scene, x, y, z, aquariumModels);
+    aquarium.school.push(fish);
 }
-
-createAndRenderTheAquarium();
-
-// create fish
-function createFish() {
-    for (let i = 0; i < aquarium.numFish; i++) {
-        let x = Math.random() * (parseInt(aquarium.water.waterDiv.style.width) - 80) + 20;
-        let y = Math.random() * (parseInt(aquarium.water.waterDiv.style.height) - 80) + 20;
-        let size = Math.random() * 10 + 10;
-        let color = {
-            r: Math.random() * 255,
-            g: Math.random() * 200,
-            b: Math.random() * 255,
-        }
-        let fish = new Fish(x, y, size, color);
-        aquarium.school.push(fish);
-        fish.renderFish();
-    }
-}
-
-function animateFish(){
-    for (let fish of aquarium.school) {
-        fish.move();
-        fish.checkEdges();
-        fish.separate(aquarium.school);
-        fish.renderFish();
-    }
-    document.querySelector(".water").addEventListener("pointermove", assign); // when the mouse moves, the seek behaviour is activated (seek state)
-    // document.querySelector(".water").addEventListener("touchmove", assignTouch); // when the touch moves, the seek behaviour is activated (seek state)
-    requestAnimationFrame(animateFish);
-}
-
-createFish();
-animateFish();
 
 /*
 * Assigns the mouse X and mouse Y position as the target for the fish to follow, activates seek behaviour
@@ -82,17 +65,51 @@ function assign(e) {
         pageY: e.pageY,  
     }
     let mouseX = touch.pageX;
-    console.log(mouseX)
+    // console.log(mouseX)
     let mouseY = touch.pageY;
     /*
     * Optimized by following the method of taking the mouse Vector out of the loop, The Nature of Code, ch 5, "Algorithmic Efficiency"
     https://natureofcode.com/autonomous-agents/#algorithmic-efficiency-or-why-does-my-sketch-run-so-slowly
     */
-    let mouse = new Vector(mouseX, mouseY);
-    for (let fish of aquarium.school) {
-        fish.seek(mouse);
-    }
+    let mouse = new THREE.Vector3(mouseX, mouseY, 0);
+    aquarium.school.forEach(Fish => Fish.seek(mouse));
 }
+
+let elapsedTime = 0;
+function animate(timer) {
+    requestAnimationFrame(animate);
+    
+    const delta = 0.001*(timer - elapsedTime) ;
+    // console.log(delta)
+    elapsedTime = timer;
+    
+    // Update all fish (this handles fish movement and animation)
+    aquarium.school.forEach(Fish => Fish.update(delta));
+    aquarium.school.forEach(Fish => Fish.checkEdges());
+    aquarium.school.forEach(Fish => Fish.separate(aquarium.school));
+    window.addEventListener("pointermove", assign); // when the mouse moves, the seek behaviour is activated (seek state)
+    // document.querySelector(".water").addEventListener("touchmove", assignTouch); // when the touch moves, the seek behaviour is activated (seek state)
+    
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+animate(0);
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Source - https://stackoverflow.com/a/5650012
+// Posted by Alnitak, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-04-06, License - CC BY-SA 3.0
+function map_range(value, low1, high1, low2, high2) {
+    return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+}
+
 
 // function assignTouch(e) {
 //     e.preventDefault();
@@ -120,8 +137,6 @@ function assign(e) {
 //         }        
 //     }
 // }
-
-}
 
 // let flock;
 
