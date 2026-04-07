@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 export class Fish {
-    constructor(scene, x, y, z, aquariumModels) {
+    constructor(scene, x, y, z, size, aquariumModels) {
         this.scene = scene;
         this.x = x;
         this.y = y;
@@ -9,7 +9,7 @@ export class Fish {
         // this.position = new Vector(this.x,this.y);
         this.position = new THREE.Vector3(this.x, this.y, this.z);
         // console.log(this.position) // here, it works
-        // this.size = size;
+        this.size = size;
         // this.color = color;
         this.models = aquariumModels;
         this.vx = Math.random() * 2 + 1;
@@ -24,18 +24,24 @@ export class Fish {
         this.maxForce = 0.2;
 
         // from Oliver Cooke on Sketchfab, standard license
+        // console.log(this.models[0].scene)
         this.fishModel = this.models[0].scene.children[0];
             this.fishModel.castShadow = true;
             this.fishModel.receiveShadow = true;
-        this.fishModel.scale.set(10,10,10);
-        this.fishModel.position.x = this.position.x
-        this.fishModel.position.y = this.position.y
-        this.fishModel.position.z = this.position.z
+        this.fishModel.scale.set(size,size,size);
+        this.fishModel.position.x = this.position.x;
+        this.fishModel.position.y = this.position.y;
+        this.fishModel.position.z = this.position.z;
         // this.angleX = Math.random() * Math.PI * 2;
         // this.angleY = Math.random() * Math.PI * 2;
         // this.angleZ = Math.random() * Math.PI * 2;
         
         this.scene.add(this.fishModel);
+
+        this.mixer = new THREE.AnimationMixer(this.fishModel);
+        const clip = this.models[0].animations[0];
+        const anim_action = this.mixer.clipAction(clip);
+        anim_action.play();
     }
     
     // Move the fish according to its velocity
@@ -49,52 +55,63 @@ export class Fish {
         this.fishModel.position.x = this.position.x
         this.fishModel.position.y = this.position.y
         this.fishModel.position.z = this.position.z
-        let angle = this.position.angleTo(this.velocity);
-        this.fishModel.rotation.set(-angle, -angle, -angle);
+        this.angleY = Math.atan2(this.velocity.x, this.velocity.y)
+        // this.angleZ = Math.atan2(this.velocity.x, this.velocity.z)
+        // let angle = this.position.angleTo(this.velocity);
+        // this.fishModel.rotation.set(angle, angle + 1.57, angle + 1.57);
+        this.fishModel.rotation.x = -1.57;
+        this.fishModel.rotation.y = Math.PI/2 + this.angleY;
+        // this.fishModel.rotation.z = this.angleZ;
+        this.fishModel.rotation.z = -Math.PI/2;
         this.acceleration.multiplyScalar(0);
-    }
 
-    checkEdges() {
-        /* 
-        * "Stay Within Walls" Steering Behaviour adapted from The Nature of Code, chapter 5, example 5.3
-        * https://editor.p5js.org/natureofcode/sketches/fGNwVP3h7
-        */ 
-        let dir = null;
-
-        // Steer off left edge and right edge
-        if (this.position.x <= -100) {
-            // this.velocity.x = this.velocity.x * -1; // flips to positive so the fish goes right now
-            dir = new THREE.Vector3(this.topSpeed, this.velocity.y, this.velocity.z)
-        } else if (this.position.x >= 100) {
-            // this.velocity.x *= -1; // flips to negative so the fish goes left now
-            dir = new THREE.Vector3(-this.topSpeed, this.velocity.y, this.velocity.z)
-        }
-
-        // Steer off bottom edge and steer off top edge
-        if (this.position.y <= -100) {
-            // the fish goes up now
-            dir = new THREE.Vector3(this.velocity.x, this.topSpeed, this.velocity.z)
-        } else if (this.position.y >= 100) {
-            dir = new THREE.Vector3(this.velocity.x, -this.topSpeed, this.velocity.z)
-        }
-
-        // Steer off front end and back end
-        if (this.position.z <= -100) {
-            // the fish comes back now
-            dir = new THREE.Vector3(this.velocity.x, this.velocity.y, this.topSpeed)
-        } else if (this.position.z >= 100) {
-            // the fish goes away
-            dir = new THREE.Vector3(this.velocity.x, this.velocity.y, -this.topSpeed)
-        }
-
-        if (dir !== null) {
-            dir.setLength(this.topSpeed);
-            let steer = new THREE.Vector3();
-            steer.subVectors(dir, this.velocity);
-            steer.clampLength(0, this.maxForce);
-            this.applyForce(steer);
+        if (this.mixer) {
+            this.mixer.update(this.velocity.x * 15 * delta); // Randomize how often each fish does the animation
         }
     }
+
+    // checkEdges() {
+    //     /* 
+    //     * "Stay Within Walls" Steering Behaviour adapted from The Nature of Code, chapter 5, example 5.3
+    //     * https://editor.p5js.org/natureofcode/sketches/fGNwVP3h7
+    //     */ 
+    //     let dir = null;
+
+    //     // Steer off left edge and right edge
+    //     if (this.position.x <= -100) {
+    //         // this.velocity.x = this.velocity.x * -1; // flips to positive so the fish goes right now
+    //         dir = new THREE.Vector3(this.topSpeed, this.velocity.y, this.velocity.z)
+        
+    //     } else if (this.position.x >= 100) {
+    //         // this.velocity.x *= -1; // flips to negative so the fish goes left now
+    //         dir = new THREE.Vector3(-this.topSpeed, this.velocity.y, this.velocity.z)
+    //     }
+
+    //     // Steer off bottom edge and steer off top edge
+    //     if (this.position.y <= -100) {
+    //         // the fish goes up now
+    //         dir = new THREE.Vector3(this.velocity.x, this.topSpeed, this.velocity.z)
+    //     } else if (this.position.y >= 100) {
+    //         dir = new THREE.Vector3(this.velocity.x, -this.topSpeed, this.velocity.z)
+    //     }
+
+    //     // Steer off front end and back end
+    //     if (this.position.z <= -100) {
+    //         // the fish comes back now
+    //         dir = new THREE.Vector3(this.velocity.x, this.velocity.y, this.topSpeed)
+    //     } else if (this.position.z >= 100) {
+    //         // the fish goes away
+    //         dir = new THREE.Vector3(this.velocity.x, this.velocity.y, -this.topSpeed)
+    //     }
+
+    //     if (dir !== null) {
+    //         dir.setLength(this.topSpeed);
+    //         let steer = new THREE.Vector3();
+    //         steer.subVectors(dir, this.velocity);
+    //         steer.clampLength(0, this.maxForce);
+    //         this.applyForce(steer);
+    //     }
+    // }
 
     /*
     * Adapted from The Nature of Code, chapter 2, example 2.1 "Forces"
@@ -128,7 +145,7 @@ export class Fish {
     */
     separate(school) {
         // This variable specifies how close is too close.
-        let desiredSeparation = 10;
+        let desiredSeparation = 5;
         let sum = new THREE.Vector3(0,0,0);
         let count = 0;
         for (let other of school) {

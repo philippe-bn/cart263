@@ -82,6 +82,7 @@ export class PlanetC {
         this.sheepModel1.rotation.set(0, -1.57, 0); // to rotate 90 degrees to get it sideways
 
         // this.sheepModel2 = this.models[0].scene.children[0];
+        // console.log(this.sheepModel2)
         //     this.sheepModel2.castShadow = true;
         //     this.sheepModel2.receiveShadow = true;
         // this.sheepModel2.scale.set(.10,.10,.10);
