@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js';
 import { Fish } from '/js/Fish.js';
@@ -8,7 +8,7 @@ import { Fish } from '/js/Fish.js';
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("rgb(0, 0, 155)"); // Blue, hexadecimal - water backdrop
 
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
 camera.position.set(0, 0, 2000);
 camera.lookAt(0, 0, 0);
 
@@ -19,35 +19,49 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 // Controls
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.05;
-controls.maxDistance = 150;
-controls.minDistance = 20;
+// const controls = new OrbitControls(camera, renderer.domElement);
+// controls.enableDamping = true;
+// controls.dampingFactor = 0.05;
+// controls.maxDistance = 150;
+// controls.minDistance = 20;
+let controls;
+controls = new FirstPersonControls( camera, renderer.domElement );
+controls.movementSpeed = 150;
+controls.lookSpeed = 0.1;
 
 // --- Lighting ---
-const ambientLight = new THREE.AmbientLight("rgb(100, 100, 100)"); // Bright ambient to see fish
+const ambientLight = new THREE.AmbientLight(0xffffff); // Bright ambient to see fish
 scene.add(ambientLight);
 
 const spotRay1 = new THREE.SpotLight( 0xffffff );
-spotRay1.position.set(-30, 100, 100 ); // placed above the water
-spotRay1.angle = Math.PI/15;
+spotRay1.position.set(-30, 1000, 100 ); // placed above the water
+spotRay1.angle = Math.PI/100;
 spotRay1.penumbra = 0.5;
-// spotRay1.target = ? need seabed? or null object?
-scene.add( spotRay1 );
-const spotLightHelper1 = new THREE.SpotLightHelper( spotRay1 );
-// scene.add( spotLightHelper1 );
+// const spotRay1TargetPlane = new THREE.PlaneGeometry(100, 100);
+// const spotRayTargetMaterial = new THREE.MeshBasicMaterial({wireframe: true})
+// const spotRay1Target = new THREE.Mesh(spotRay1TargetPlane, spotRayTargetMaterial);
+// scene.add(spotRay1Target)
+// spotRay1Target.position.set(-30, -1000, 0);
+// spotRay1.target = spotRay1Target;
+scene.add(spotRay1);
+// const spotLightHelper1 = new THREE.SpotLightHelper( spotRay1 );
+// scene.add(spotLightHelper1);
 
-const spotRay2 = new THREE.SpotLight( 0xffffff );
-spotRay2.position.set(-30, 100, 100 ); // placed above the water
-spotRay2.angle = Math.PI/15;
-spotRay2.penumbra = 0.5;
-scene.add( spotRay1 );
-const spotLightHelper2 = new THREE.SpotLightHelper( spotRay2 );
-// scene.add( spotLightHelper2 );
+// const spotRay2 = new THREE.SpotLight( 0xffffff );
+// spotRay2.position.set(100, 1000, 100 ); // placed above the water
+// spotRay2.angle = Math.PI/100;
+// spotRay2.penumbra = 0.5;
+// // const spotRay2TargetPlane = new THREE.PlaneGeometry(100, 100);
+// // const spotRay2Target = new THREE.Mesh(spotRay2TargetPlane, spotRayTargetMaterial);
+// // scene.add(spotRay2Target)
+// // spotRay2Target.position.set(400, -1000, 0);
+// // spotRay2.target = spotRay2Target;
+// scene.add(spotRay2);
+// const spotLightHelper2 = new THREE.SpotLightHelper(spotRay2);
+// scene.add(spotLightHelper2);
 
 const light = new THREE.DirectionalLight( 0xFFFFFF ); // Sunlight
-scene.add( light );
+scene.add(light);
 
 
 // Our aquarium
@@ -56,6 +70,8 @@ let aquarium = {
     school: [],
 };
 
+// From THREE.js "geometry / terrain" example
+//  https://github.com/mrdoob/three.js/blob/master/examples/webgl_geometry_terrain.html
 let mesh, texture;
 const worldWidth = 256, worldDepth = 256;
 
@@ -179,30 +195,6 @@ function generateTexture( data, width, height ) {
 
 }
 
-
-
-// const seaBed = new THREE.PlaneGeometry(1000, 1000, 100, 100);
-// const peaks = seaBed.attributes.position;
-
-// for (let i = 0; i < peaks.count; i++) {
-//     const x = peaks.getX(i);
-//     const y = peaks.getY(i);
-    
-//     // Divide by a 'smoothing' factor to control hill size
-//     let z = new SimplexNoise();
-//     z = z.noise(x / 2, y / 2) * 200; 
-//     peaks.setZ(i, z);
-// }
-// // seaBed.computeVertexNormals(); // Required for proper lighting
-
-// const material = new THREE.MeshStandardMaterial({color: 0x110000});
-// const plane = new THREE.Mesh( seaBed, material );
-// plane.position.set(0, -1000, 0)
-// plane.rotation.set(-1.57, 0,0)
-// scene.add( plane );
-
-
-
 // Populate the aquarium
 for (let i = 0; i < aquarium.numFish; i++) {
     let x = Math.random() * 100;
@@ -263,7 +255,7 @@ function animate(timer) {
     window.addEventListener("pointermove", assign); // when the mouse moves, the seek behaviour is activated (seek state)
     // document.querySelector(".water").addEventListener("touchmove", assignTouch); // when the touch moves, the seek behaviour is activated (seek state)
     
-    controls.update();
+    controls.update(delta);
     renderer.render(scene, camera);
 }
 
@@ -274,6 +266,7 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+	controls.handleResize();
 });
 
 // Source - https://stackoverflow.com/a/5650012
