@@ -65,8 +65,10 @@ function assign(e) {
         pageY: e.pageY,  
     }
     let mouseX = touch.pageX;
+    mouseX = map_range(mouseX, 0, innerWidth, -innerWidth/2, innerWidth/2)
     // console.log(mouseX)
     let mouseY = touch.pageY;
+    mouseY = map_range(mouseY, 0, innerHeight, innerHeight/2, -innerHeight/2)
     /*
     * Optimized by following the method of taking the mouse Vector out of the loop, The Nature of Code, ch 5, "Algorithmic Efficiency"
     https://natureofcode.com/autonomous-agents/#algorithmic-efficiency-or-why-does-my-sketch-run-so-slowly

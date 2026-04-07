@@ -19,13 +19,8 @@ export class Fish {
         this.vz = Math.random() * 2 + 1;
         this.vz = map_range(this.vz, 1, 2, -1, 1)
         this.velocity = new THREE.Vector3(this.vx, this.vy, this.vz);
-        /*
-        * "Motion 101" adapted from The Nature of Code, chapter 1
-        * https://natureofcode.com/vectors/#motion-with-vectors 
-        */
         this.acceleration = new THREE.Vector3(0,0,0);
-        this.topSpeed = 0.05;
-        this.topVelocity = new THREE.Vector3(this.topSpeed, this.topSpeed, this.topSpeed)
+        this.topSpeed = 0.5;
         this.maxForce = 0.2;
 
         // from Oliver Cooke on Sketchfab, standard license
@@ -36,9 +31,11 @@ export class Fish {
         this.fishModel.position.x = this.position.x
         this.fishModel.position.y = this.position.y
         this.fishModel.position.z = this.position.z
-
+        // this.angleX = Math.random() * Math.PI * 2;
+        // this.angleY = Math.random() * Math.PI * 2;
+        // this.angleZ = Math.random() * Math.PI * 2;
+        
         this.scene.add(this.fishModel);
-        this.bounds = 200;
     }
     
     // Move the fish according to its velocity
@@ -47,12 +44,14 @@ export class Fish {
     */
     update(delta) {
         this.velocity.add(this.acceleration);
-        this.velocity.max(this.topVelocity);
+        this.velocity.clampLength(0, this.topSpeed);
         this.position.add(this.velocity) * delta;
-        // this.acceleration.multiply(0);
         this.fishModel.position.x = this.position.x
         this.fishModel.position.y = this.position.y
         this.fishModel.position.z = this.position.z
+        let angle = this.position.angleTo(this.velocity);
+        this.fishModel.rotation.set(-angle, -angle, -angle);
+        this.acceleration.multiplyScalar(0);
     }
 
     checkEdges() {
@@ -63,27 +62,27 @@ export class Fish {
         let dir = null;
 
         // Steer off left edge and right edge
-        if (this.position.x <= -this.bounds) {
+        if (this.position.x <= -100) {
             // this.velocity.x = this.velocity.x * -1; // flips to positive so the fish goes right now
             dir = new THREE.Vector3(this.topSpeed, this.velocity.y, this.velocity.z)
-        } else if (this.position.x >= this.bounds) {
+        } else if (this.position.x >= 100) {
             // this.velocity.x *= -1; // flips to negative so the fish goes left now
             dir = new THREE.Vector3(-this.topSpeed, this.velocity.y, this.velocity.z)
         }
 
         // Steer off bottom edge and steer off top edge
-        if (this.position.y <= -this.bounds) {
+        if (this.position.y <= -100) {
             // the fish goes up now
             dir = new THREE.Vector3(this.velocity.x, this.topSpeed, this.velocity.z)
-        } else if (this.position.y >= this.bounds) {
+        } else if (this.position.y >= 100) {
             dir = new THREE.Vector3(this.velocity.x, -this.topSpeed, this.velocity.z)
         }
 
         // Steer off front end and back end
-        if (this.position.z <= -this.bounds) {
+        if (this.position.z <= -100) {
             // the fish comes back now
             dir = new THREE.Vector3(this.velocity.x, this.velocity.y, this.topSpeed)
-        } else if (this.position.z >= this.bounds) {
+        } else if (this.position.z >= 100) {
             // the fish goes away
             dir = new THREE.Vector3(this.velocity.x, this.velocity.y, -this.topSpeed)
         }
@@ -92,7 +91,7 @@ export class Fish {
             dir.setLength(this.topSpeed);
             let steer = new THREE.Vector3();
             steer.subVectors(dir, this.velocity);
-            steer.max(this.maxForce);
+            steer.clampLength(0, this.maxForce);
             this.applyForce(steer);
         }
     }
@@ -114,10 +113,14 @@ export class Fish {
         dir.subVectors(mouse, this.position);
         dir.setLength(this.topSpeed);
 
-        let steer = new THREE.Vector3()
+        let steer = new THREE.Vector3();
         steer.subVectors(dir, this.velocity);
-        steer.max(this.maxForce);
+        steer.clampLength(0, this.maxForce);
         this.applyForce(steer);
+
+        this.angleX = Math.acos(dir.x/dir.lengthSq);
+        this.angleY = Math.acos(dir.y/dir.lengthSq);
+        this.angleZ = Math.acos(dir.z/dir.lengthSq);
     }
 
     /*
@@ -125,7 +128,7 @@ export class Fish {
     */
     separate(school) {
         // This variable specifies how close is too close.
-        let desiredSeparation = 30;
+        let desiredSeparation = 10;
         let sum = new THREE.Vector3(0,0,0);
         let count = 0;
         for (let other of school) {
@@ -144,7 +147,7 @@ export class Fish {
             sum.setLength(this.topSpeed);
             let steer = new THREE.Vector3()
             steer.subVectors(sum, this.velocity);
-            steer.max(this.maxForce);
+            steer.clampLength(0, this.maxForce);
             this.applyForce(steer);
         }
     }
