@@ -2,14 +2,32 @@ import * as THREE from 'three';
 import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js';
+import { Sky } from 'three/addons/objects/Sky.js';
+import { Butterfly } from '/js/Butterfly.js';
 import { Fish } from '/js/Fish.js';
 
 // --- Core Setup ---
 const scene = new THREE.Scene();
-scene.background = new THREE.Color("rgb(0, 0, 155)"); // Blue, hexadecimal - water backdrop
+// for Ocean variation
+// scene.background = new THREE.Color("rgb(0, 0, 155)"); // Blue, hexadecimal - water backdrop 
+
+// Skybox setup for Sky variation
+const sky = new Sky();
+sky.scale.setScalar( 450000 );
+scene.add( sky );
+const skyUniforms = sky.material.uniforms;
+skyUniforms[ 'turbidity' ].value = 5; // Low for clear, cartoonish sky
+skyUniforms[ 'rayleigh' ].value = 5; // High for light blue
+skyUniforms[ 'mieCoefficient' ].value = 0.001; // Low for subtle clouds
+skyUniforms[ 'mieDirectionalG' ].value = 0.8;
+const sun = new THREE.Vector3();
+const phi = THREE.MathUtils.degToRad( 90 - 5 ); // Sun position for light
+const theta = THREE.MathUtils.degToRad( 180 );
+sun.setFromSphericalCoords( 1, phi, theta );
+skyUniforms[ 'sunPosition' ].value.copy( sun );
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
-camera.position.set(0, 0, 2000);
+camera.position.set(0, 0, 0);
 camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -64,10 +82,16 @@ const light = new THREE.DirectionalLight( 0xFFFFFF ); // Sunlight
 scene.add(light);
 
 
-// Our aquarium
-let aquarium = {
-    numFish: 100,
-    school: [],
+// Our fish in the Ocean variation
+// let ocean = {
+//     numFish: 100,
+//     school: [],
+// };
+
+// Our butterflies in the Sky
+let butterflies = {
+    numButterflies: 100,
+    swarm: [],
 };
 
 // From THREE.js "geometry / terrain" example
@@ -75,7 +99,10 @@ let aquarium = {
 let mesh, texture;
 const worldWidth = 256, worldDepth = 256;
 
-scene.fog = new THREE.FogExp2( 0x000055, 0.0025 );
+// For the Ocean
+// scene.fog = new THREE.FogExp2( 0x000055, 0.0025 );
+// For the Sky
+scene.fog = new THREE.FogExp2( 0x87CEEB, 0.0005 );
 
 const data = generateHeight( worldWidth, worldDepth );
 
@@ -195,27 +222,37 @@ function generateTexture( data, width, height ) {
 
 }
 
-// Populate the aquarium
-for (let i = 0; i < aquarium.numFish; i++) {
-    let x = Math.random() * 100;
-    x = map_range(x, 0, 100, -100, 100);
-    let y = Math.random() * 100;
-    y = map_range(y, 0, 100, -100, 100);
-    let z = Math.random() * 100;
-    z = map_range(z, 0, 100, -100, 100);
-    // console.log([x,y,z])
+// Populate the ocean
+// for (let i = 0; i < ocean.numFish; i++) {
+//     let x = Math.random() * 100;
+//     x = map_range(x, 0, 100, -100, 100);
+//     let y = Math.random() * 100;
+//     y = map_range(y, 0, 100, -100, 100);
+//     let z = Math.random() * 100;
+//     z = map_range(z, 0, 100, -100, 100);
+//     // console.log([x,y,z])
+//     let size = Math.random() * 5 + 8;
+//         // let color = {
+//         //     r: Math.random() * 255,
+//         //     g: Math.random() * 200,
+//         //     b: Math.random() * 255,
+//         // }
+//     const gltfLoader = new GLTFLoader();
+//     let fishModel = await gltfLoader.loadAsync("models/animated_low_poly_fish_gltf/scene.gltf");
+//     let oceanModels = []
+//     oceanModels.push(fishModel)
+//     let fish = new Fish(scene, x, y, z, size, oceanModels);
+//     ocean.school.push(fish);
+// }
+
+// Populate the world with butterflies
+for (let i = 0; i < butterflies.numButterflies; i++) {
+    let x = Math.random() * 7500 - 3750;
+    let y = Math.random() * 400 - 200;
+    let z = Math.random() * 7500 - 3750;
     let size = Math.random() * 5 + 8;
-        // let color = {
-        //     r: Math.random() * 255,
-        //     g: Math.random() * 200,
-        //     b: Math.random() * 255,
-        // }
-    const gltfLoader = new GLTFLoader();
-    let fishModel = await gltfLoader.loadAsync("models/animated_low_poly_fish_gltf/scene.gltf");
-    let aquariumModels = []
-    aquariumModels.push(fishModel)
-    let fish = new Fish(scene, x, y, z, size, aquariumModels);
-    aquarium.school.push(fish);
+    let butterfly = new Butterfly(scene, x, y, z, size);
+    butterflies.swarm.push(butterfly);
 }
 
 /*
@@ -237,7 +274,10 @@ function assign(e) {
     https://natureofcode.com/autonomous-agents/#algorithmic-efficiency-or-why-does-my-sketch-run-so-slowly
     */
     let mouse = new THREE.Vector3(mouseX, mouseY, 0);
-    aquarium.school.forEach(Fish => Fish.seek(mouse));
+	// Ocean variation
+    // ocean.school.forEach(Fish => Fish.seek(mouse));
+	// Sky variation
+	butterflies.swarm.forEach(Butterfly => Butterfly.seek(mouse));
 }
 
 let elapsedTime = 0;
@@ -247,11 +287,18 @@ function animate(timer) {
     const delta = 0.001*(timer - elapsedTime) ;
     // console.log(delta)
     elapsedTime = timer;
-    
-    // Update all fish (this handles fish movement and animation)
-    aquarium.school.forEach(Fish => Fish.update(delta));
-    // aquarium.school.forEach(Fish => Fish.checkEdges());
-    aquarium.school.forEach(Fish => Fish.separate(aquarium.school));
+   
+	// For Ocean variation
+    // // Update all fish (this handles fish movement and animation)
+    // ocean.school.forEach(Fish => Fish.update(delta));
+    // // ocean.school.forEach(Fish => Fish.checkEdges());
+    // ocean.school.forEach(Fish => Fish.separate(ocean.school));
+
+	// Update all butterflies (this handles butterfly movement and animation)
+    butterflies.swarm.forEach(Butterfly => Butterfly.update(delta));
+    // butterflies.swarm.forEach(Butterfly => Butterfly.checkEdges());
+    butterflies.swarm.forEach(Butterfly => Butterfly.separate(butterflies.swarm));
+	
     window.addEventListener("pointermove", assign); // when the mouse moves, the seek behaviour is activated (seek state)
     // document.querySelector(".water").addEventListener("touchmove", assignTouch); // when the touch moves, the seek behaviour is activated (seek state)
     
@@ -298,7 +345,7 @@ function map_range(value, low1, high1, low2, high2) {
 //         let touchX = changedTouch.pageX
 //         let touchY = changedTouch.pageY
 //         let finger = new Vector(touchX, touchY);
-//         for (let fish of aquarium.school) {
+//         for (let fish of ocean.school) {
 //             fish.seek(finger);
 //         }        
 //     }

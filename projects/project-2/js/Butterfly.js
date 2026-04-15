@@ -1,17 +1,13 @@
 import * as THREE from 'three';
 
-export class Fish {
-    constructor(scene, x, y, z, size, oceanModels) {
+export class Butterfly {
+    constructor(scene, x, y, z, size) {
         this.scene = scene;
         this.x = x;
         this.y = y;
         this.z = z;
-        // this.position = new Vector(this.x,this.y);
         this.position = new THREE.Vector3(this.x, this.y, this.z);
-        // console.log(this.position) // here, it works
         this.size = size;
-        // this.color = color;
-        this.models = oceanModels;
         this.vx = Math.random() * 2 + 1;
         this.vx = map_range(this.vx, 1, 2, -1, 1)
         this.vy = Math.random() * 2 + 1;
@@ -23,51 +19,44 @@ export class Fish {
         this.topSpeed = 0.5;
         this.maxForce = 0.2;
 
-        // from Oliver Cooke on Sketchfab, standard license
-        // console.log(this.models[0].scene)
-        this.fishModel = this.models[0].scene.children[0];
-            this.fishModel.castShadow = true;
-            this.fishModel.receiveShadow = true;
-        this.fishModel.scale.set(size,size,size);
-        this.fishModel.position.x = this.position.x;
-        this.fishModel.position.y = this.position.y;
-        this.fishModel.position.z = this.position.z;
-        // this.angleX = Math.random() * Math.PI * 2;
-        // this.angleY = Math.random() * Math.PI * 2;
-        // this.angleZ = Math.random() * Math.PI * 2;
-        
-        this.scene.add(this.fishModel);
+        // Create butterfly geometry
+        this.body = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1), new THREE.MeshLambertMaterial({color: 0x8B4513}));
+        this.wing1 = new THREE.Mesh(new THREE.PlaneGeometry(1, 0.5), new THREE.MeshLambertMaterial({color: 0xFF69B4, side: THREE.DoubleSide}));
+        this.wing2 = new THREE.Mesh(new THREE.PlaneGeometry(1, 0.5), new THREE.MeshLambertMaterial({color: 0xFF69B4, side: THREE.DoubleSide}));
+        this.wing1.position.set(0.5, 0, 0);
+        this.wing2.position.set(-0.5, 0, 0);
+        this.butterfly = new THREE.Group();
+        this.butterfly.add(this.body, this.wing1, this.wing2);
+            this.butterfly.castShadow = true;
+            this.butterfly.receiveShadow = true;
+        this.butterfly.scale.set(size, size, size);
+        this.butterfly.position.x = this.position.x;
+        this.butterfly.position.y = this.position.y;
+        this.butterfly.position.z = this.position.z;
 
-        this.mixer = new THREE.AnimationMixer(this.fishModel);
-        const clip = this.models[0].animations[0];
-        const anim_action = this.mixer.clipAction(clip);
-        anim_action.play();
+        this.scene.add(this.butterfly);
     }
     
-    // Move the fish according to its velocity
+    // Move the butterfly according to its velocity
     /*
     * Adapted from The Nature of Code, chapter 5, example 5.1 "Seeking a Target"
     */
     update(delta) {
         this.velocity.add(this.acceleration);
         this.velocity.clampLength(0, this.topSpeed);
-        this.position.add(this.velocity) * delta;
-        this.fishModel.position.x = this.position.x
-        this.fishModel.position.y = this.position.y
-        this.fishModel.position.z = this.position.z
-        this.angleY = Math.atan2(this.velocity.x, this.velocity.y)
-        // this.angleZ = Math.atan2(this.velocity.x, this.velocity.z)
-        // let angle = this.position.angleTo(this.velocity);
-        // this.fishModel.rotation.set(angle, angle + 1.57, angle + 1.57);
-        this.fishModel.rotation.x = -1.57;
-        this.fishModel.rotation.y = Math.PI/2 + this.angleY;
-        // this.fishModel.rotation.z = this.angleZ;
-        this.fishModel.rotation.z = -Math.PI/2;
+        this.position.add(this.velocity * delta);
+        // this.butterfly.position.x = this.position.x
+        // this.butterfly.position.y = this.position.y
+        // this.butterfly.position.z = this.position.z
+        this.angleY = Math.atan2(this.velocity.x, this.velocity.y);
+        this.butterfly.rotation.x = 0;
+        // this.butterfly.rotation.y = Math.PI/2 + this.angleY;
+        this.butterfly.rotation.z = 0;
         this.acceleration.multiplyScalar(0);
 
-        if (this.mixer) {
-            this.mixer.update(this.velocity.x * 15 * delta); // Randomize how often each fish does the animation
-        }
+        // Animate wings
+        this.wing1.rotation.z = Math.sin(Date.now() * 0.01) * 0.5;
+        this.wing2.rotation.z = -Math.sin(Date.now() * 0.01) * 0.5;
     }
 
     /*
@@ -100,12 +89,12 @@ export class Fish {
     /*
     * "Separate" behaviour adapted from The Nature of Code, chapter 5, "Complex Systems"
     */
-    separate(school) {
+    separate(swarm) {
         // This variable specifies how close is too close.
         let desiredSeparation = 5;
         let sum = new THREE.Vector3(0,0,0);
         let count = 0;
-        for (let other of school) {
+        for (let other of swarm) {
             //{!1 .offset} What is the distance between this vehicle and the other vehicle?
             let d = this.position.distanceTo(other.position);
             if (this !== other && d < desiredSeparation) {
