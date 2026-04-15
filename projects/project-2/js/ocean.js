@@ -3,8 +3,8 @@ import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.j
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js';
 import { Sky } from 'three/addons/objects/Sky.js';
-import { Butterfly } from '/js/Butterfly.js';
-import { Fish } from '/js/Fish.js';
+import { Butterfly } from './Butterfly.js';
+import { Fish } from './Fish.js';
 
 // --- Core Setup ---
 const scene = new THREE.Scene();
