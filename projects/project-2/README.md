@@ -1,8 +1,8 @@
 # Escapism
 by Philippe Beauchemin and Ben Macknofsky, 2026
 
-[View the project](https://philippe-bn.github.io/cart263/projects/project-2/)
-[Video Demo](https://youtu.be/2d0URWZfoEA)
+[View the project](https://philippe-bn.github.io/cart263/projects/project-2/)  
+[Video Demo](https://youtu.be/2d0URWZfoEA)  
 [Artist Statement](CART263%20Project%202%20Artist%20Statement.pdf)
 
 ### Attributions
