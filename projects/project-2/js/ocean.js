@@ -191,7 +191,7 @@ for ( let i = 0; i < numVertices; i++ ) {
 geometry.setAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
 
 const loader = new THREE.TextureLoader();
-const grassTexture = loader.load('models/animated_low_poly_fish_gltf/textures/grasstextures.jpg'); // Load terrain texture
+const grassTexture = loader.load('textures/grasstextures.jpg'); // Load terrain texture
 
 grassTexture.wrapS = THREE.RepeatWrapping;
 grassTexture.wrapT = THREE.RepeatWrapping;
