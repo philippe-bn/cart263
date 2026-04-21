@@ -988,7 +988,6 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight; // Update camera aspect ratio
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight); // Resize renderer
-	controls.handleResize();
 });
 
 // Source - https://stackoverflow.com/a/5650012
