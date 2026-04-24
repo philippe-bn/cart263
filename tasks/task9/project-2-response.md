@@ -11,7 +11,7 @@
 > The interactions are a bit confusing, but very similar to the physical interactions of Tamagotchi devices.
 > The aesthetic of the game is unique: it relies on the Cute (or kawaii), with pastel colours, pixel art and hyperstylicized fonts.
 > I was surprised by the various hidden mechanics: the "cake is a lie" moment and the Pokemon fight scene, among others. I found that these increased the complexity of the program significantly.
-> I find it interesting that specifically for the Pokemon fight scene they used the Phaser library.
+> I find it interesting that specifically for the Pokemon fight scene they used the Phaser.js library.
 > The choices are coherent and make for a very unified visual experience. The sounds are well used and sometimes a bit much, but make the game that much more immersive.
 > The inspirations are obvious and well described.
 > I would have liked to have some more explanations in-game about what it is, even if I understood some of the references, as well as some hints as to what each action leads to, although I enjoyed the serendipitous quality of finding the various endings.
@@ -22,5 +22,5 @@
 > Just like he did in Project 1, the combination of assets created in Blender, as well as Illustrator as I had mentioned, with HTML, CSS and Javascript is at the heart of the project: he pre-renders lights and objects before importing them, economically making use of loaders and efficiently world-building before layering UI, text and menus.
 > I was surprised by the movement of objects in this space when I hovered over the UI, but this was a pleasant experience, which made the room feel less static. I would have liked to see more: this could have helped maximize the use of this beautiful 3D environment. I found that for example, not making use of the 3D bike in there was a missed opportunity, even if it would have meant losing the colour customization that was enabled through the 2D representation of the bike he previously had.
 > I still think that this project uses the DOM smartly, and that makes for a very logical experience: the user is pleased to see the tool "remember" the specs of their bike.
-> Using a library for the parallax effect was smart, and I personally found it beautiful, but I do think it was very minimalistic. I understand the technical challenge behind it and I am not sure if I could reproduce it myself, but from an aesthetic point of view, this could have been more drastic or more intuitive for bigger impact.
+> Using the Three.js library for the parallax effect was smart, and I personally found it beautiful, but I do think it was very minimalistic. I understand the technical challenge behind it and I am not sure if I could reproduce it myself, but from an aesthetic point of view, this could have been more drastic or more intuitive for bigger impact.
 > I once again can absolutely see the use cases for this project and hope Émile keeps working on this!
