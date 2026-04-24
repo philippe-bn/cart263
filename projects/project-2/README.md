@@ -5,7 +5,11 @@ by Philippe Beauchemin and Ben Macknofsky, 2026
 [Video Demo](https://youtu.be/2d0URWZfoEA)  
 [Artist Statement](CART263%20Project%202%20Artist%20Statement.pdf)
 
-### Attributions
+---
+
+![Screenshot] (screen-grabs/sublime.png)
+
+## Attributions
 - Made with the Three.js library, MIT License https://threejs.org/
 - "Remixed" examples from Three.js examples
     - Terrain generation with "Improved Noise" algorithm https://threejs.org/examples/#webgl_geometry_terrain using 'three/addons/math/ImprovedNoise.js'
@@ -15,3 +19,7 @@ by Philippe Beauchemin and Ben Macknofsky, 2026
 - Sky object from 'three/addons/objects/Sky.js'
 - GPU Computation Renderer from 'three/addons/misc/GPUComputationRenderer.js';
 - Flocking behaviour informed by *The Nature of Code* by Daniel Schiffman, Creative Commons https://natureofcode.com/ 
+
+## License
+
+> This project is licensed under a Creative Commons Attribution ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.en)) license with the exception of libraries and other components with their own licenses.
