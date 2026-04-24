@@ -7,7 +7,7 @@ by Philippe Beauchemin and Ben Macknofsky, 2026
 
 ---
 
-![Screenshot] (screen-grabs/sublime.png)
+![Screenshot](screen-grabs/sublime.png)
 
 ## Attributions
 - Made with the Three.js library, MIT License https://threejs.org/
