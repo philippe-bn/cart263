@@ -1,6 +1,8 @@
 # Escapism
 by Philippe Beauchemin and Ben Macknofsky, 2026
 
+An interactive web experience built with Three.js. It explores the theme of fantasy through a simulated 3D environment in which the user can navigate. By restricting the affordances of our environment to only spatial displacement within it, the user is limited to a passive experience, like an intruder into this virtual world. Through this highly aestheticized dreamscape, the viewer witnesses “life” as it is simulated by algorithms, a window into a world which does not exist, an escape into a Secondary World.
+
 [View the project](https://philippe-bn.github.io/cart263/projects/project-2/)  
 [Video Demo](https://youtu.be/2d0URWZfoEA)  
 [Artist Statement](CART263%20Project%202%20Artist%20Statement.pdf)
