@@ -17,35 +17,26 @@ class DrawingBoard {
     this.canvas.addEventListener("click", function (e) {
       self.clickCanvas(e);
     });
-
     this.canvas.addEventListener("mousemove", function (e) {
       self.overCanvas(e);
     });
 
-    // Norah
-    document.addEventListener("keydown", (e) => {
-      if (e.code === "Space" && this.drawingBoardId === "partA") {
-        this.clearObjects();
+    // TASK 1
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace") {
+        self.removeObj();
       }
     });
+
   }
+
+  /* method to handle the mousemove event on the Canvas */
   overCanvas(e) {
-    //console.log("over");
     this.canvasBoundingRegion = this.canvas.getBoundingClientRect();
     this.mouseOffsetX = parseInt(e.clientX - this.canvasBoundingRegion.x);
     this.mouseOffsetY = parseInt(e.clientY - this.canvasBoundingRegion.y);
-    //console.log(this.mouseOffsetX, this.mouseOffsetY);
-    //differentiate which canvas
-    //you can remove the console.logs ///
     if (this.drawingBoardId === "partA") {
       console.log("in A");
-
-      // Norah
-      // added for loop to loop thorugh objects and update their position
-      for (let i = 0; i < this.objectsOnCanvas.length; i++) {
-        this.objectsOnCanvas[i].x = this.mouseOffsetX;
-        this.objectsOnCanvas[i].y = this.mouseOffsetY;
-      }
     }
     if (this.drawingBoardId === "partB") {
       console.log("in B");
@@ -57,44 +48,33 @@ class DrawingBoard {
       console.log("in D");
     }
   }
-
+  
+  /* method to handle the mouse clicked event on the Canvas */
   clickCanvas(e) {
-    // console.log("clicked");
     this.canvasBoundingRegion = this.canvas.getBoundingClientRect();
     this.mouseOffsetX = parseInt(e.clientX - this.canvasBoundingRegion.x);
     this.mouseOffsetY = parseInt(e.clientY - this.canvasBoundingRegion.y);
-    //console.log(this.mouseOffsetX, this.mouseOffsetY);
 
-    //Norah
-    let radius = Math.random() * 30 + 10;
-    let fillColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
-    let strokeColor = `hsl(${Math.random() * 360}, 70%, 40%)`;
-
-    //differentiate which canvas
-    //you can remove the console.logs ///
     if (this.drawingBoardId === "partA") {
       console.log("in A");
+      // TASK 1 - Norah
+      let radius = Math.random() * 30 + 10;
+      let fillColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
+      let strokeColor = `hsl(${Math.random() * 360}, 70%, 40%)`;
+      // Create new circle
+      let newCircle = new CircularObj(this.mouseOffsetX, this.mouseOffsetY, radius, fillColor, strokeColor, this.context);
+      // Add to array
+      this.addObj(newCircle);
     }
-
-    // Norah
-    // Create new circle
-    let newCircle = new CircularObj(
-      this.mouseOffsetX,
-      this.mouseOffsetY,
-      radius,
-      fillColor,
-      strokeColor,
-      this.context,
-    );
-    // Add to array
-    this.addObj(newCircle);
 
     if (this.drawingBoardId === "partB") {
       console.log("in B");
     }
+
     if (this.drawingBoardId === "partC") {
       console.log("in C");
     }
+
     if (this.drawingBoardId === "partD") {
       console.log("in D");
 
@@ -103,6 +83,7 @@ class DrawingBoard {
       this.rectColor.b = Math.random() * 256;
     }
   }
+
   /* method to add obj to canvas */
   addObj(objToAdd) {
     this.objectsOnCanvas.push(objToAdd);
@@ -122,12 +103,26 @@ class DrawingBoard {
       this.objectsOnCanvas[i].update();
       this.objectsOnCanvas[i].display();
     }
+    if (this.drawingBoardId === "partA"){
+      // TASK 1 - Norah - added for loop to loop through objects and update their position
+      for (let i = 0; i < this.objectsOnCanvas.length; i++) {
+        this.objectsOnCanvas[i].x = this.mouseOffsetX;
+        this.objectsOnCanvas[i].y = this.mouseOffsetY;
+      }
+    }
   }
 
   run(videoElement) {
     for (let i = 0; i < this.objectsOnCanvas.length; i++) {
       this.objectsOnCanvas[i].update(videoElement);
       this.objectsOnCanvas[i].display();
+    }
+  }
+
+  removeObj() {
+    // TASK 1
+    if (this.drawingBoardId === "partA") {
+      this.objectsOnCanvas.pop();
     }
   }
 }

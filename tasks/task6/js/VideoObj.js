@@ -1,3 +1,4 @@
+// TASK 4
 class VideoObj {
   constructor(x, y, w, h, videoElement, context) {
     this.videoElement = videoElement;
@@ -22,7 +23,7 @@ class VideoObj {
       console.log(self.userProvidedBlur);
     });
 
-    // Émilie
+    // Émile
     // sepia filter
     let filterButton_sepia = document.getElementById("filter_button_sepia");
     let sepiaInput = document.getElementById("sepianum");
@@ -60,7 +61,7 @@ class VideoObj {
   display() {
     this.context.save();
 
-    // Émilie
+    // Émile
     // filters
     this.context.filter = `blur(${this.userProvidedBlur}px)`;
     this.context.filter += `sepia(${this.userProvidedSepia}%)`;
@@ -68,7 +69,7 @@ class VideoObj {
     this.context.filter += `invert(${this.userProvidedInvert}%)`;
 
     this.context.drawImage(this.videoElement, this.x, this.y, this.w, this.h);
-    // Émilie
+    // Émile
     this.context.fillStyle = `rgb(${this.shapeCol.r},${this.shapeCol.g},${this.shapeCol.b}}`;
 
     this.context.fillRect(this.shapeX, this.shapeY, 50, 50);
@@ -78,7 +79,7 @@ class VideoObj {
 
   //called when rectangle color is to be updated
   changeColor(newCol) {
-    // Émilie
+    // Émile
     this.shapeCol.r = newR;
     this.shapeCol.g = newG;
     this.shapeCol.b = newB;

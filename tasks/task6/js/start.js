@@ -10,8 +10,6 @@ window.addEventListener("click", function(){
         videoEl.play()
     }
 })
-
-
 videoEl.loop = true;
 
 let theCanvases = document.querySelectorAll(".canvases");
@@ -23,24 +21,25 @@ for(let i =0; i<theCanvases.length; i++){
     theContexts.push(context);
 }
 
+// TASK 1
 let drawingBoardA = new DrawingBoard(theCanvases[0],theContexts[0],theCanvases[0].id);
 //add a circular object to canvas A
 drawingBoardA.addObj(new CircularObj(100,100,20,"#FFC300","#E6E6FA", drawingBoardA.context))
 drawingBoardA.display();
 
-
-
+// TASK 2
 let drawingBoardB = new DrawingBoard(theCanvases[1],theContexts[1],theCanvases[1].id);
 //add a rectangular object to canvas B
 drawingBoardB.addObj(new RectangularObj(100,100,50,70,"#FF5733","#E6E6FA",drawingBoardB.context))
 drawingBoardB.display();
 
-
+// TASK 3
 let drawingBoardC = new DrawingBoard(theCanvases[2],theContexts[2],theCanvases[2].id);
 //add a freestyle object to canvas C
 drawingBoardC.addObj(new FreeStyleObj(10,100,300,"#CF9FFF","#CF9FFF", drawingBoardC.context))
 drawingBoardC.display();
 
+// TASK 4
 let drawingBoardD = new DrawingBoard(theCanvases[3],theContexts[3],theCanvases[3].id);
 drawingBoardD.addObj(new VideoObj(0,0,400,300,videoEl,drawingBoardD.context))
 drawingBoardD.display();

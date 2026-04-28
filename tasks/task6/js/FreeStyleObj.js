@@ -1,3 +1,4 @@
+// TASK 3
 class FreeStyleObj {
     constructor(x, y, length, f_color, s_color,context) {
       // We write instructions to set up a Flower here
@@ -35,12 +36,12 @@ class FreeStyleObj {
     }
 
     update(){
-       let newSize = Math.sin(this.counter) * this.r1 + this.r1;
-       this.y = 60 + newSize;
+      // arbitrary animation
+       let newOffset = Math.sin(this.counter) * this.r1 + this.r1;
+       this.y = 60 + newOffset;
        this.counter += 0.02;
-
+       // audioreactive properties
        this.yOffset = 5 + this.micVolume * 0.5;
-
        this.stroke_color = `hsl(${this.micVolume * 1.8}, 90%, 55%)`;
     }
   }

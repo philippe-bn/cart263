@@ -1,6 +1,7 @@
+// TASK 1
 class CircularObj {
   constructor(x, y, radius, f_color, s_color, context) {
-    // We write instructions to set up a Flower here
+    // We write instructions to set up a circle here
     // Position and size information
     this.x = x;
     this.y = y;

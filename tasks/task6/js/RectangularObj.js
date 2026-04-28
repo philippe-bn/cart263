@@ -1,6 +1,7 @@
+// TASK 2
 class RectangularObj {
   constructor(x, y, w, h, f_color, s_color, context) {
-    // We write instructions to set up a Flower here
+    // We write instructions to set up a rectangle here
     // Position and size information
     this.x = x;
     this.y = y;
@@ -29,13 +30,12 @@ class RectangularObj {
 
   //Leah
   update(){
-    let newSize = Math.sin(this.counter) * this.r1 + this.r1;
-    this.x = 30 + newSize;
+    // arbitrary animation
+    let newOffset = Math.sin(this.counter) * this.r1 + this.r1;
+    this.x = 30 + newOffset;
     this.counter += 0.03;
-
+    // audioreactive properties
     this.width = 30 + this.micVolume * 0.6;
-
     this.fill_color= `hsl(${this.micVolume * 2}, 60%, 45%)`;
-    
 }
 }
