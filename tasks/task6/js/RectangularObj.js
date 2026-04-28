@@ -11,6 +11,12 @@ class RectangularObj {
     this.startAngle = 0;
     this.endAngle = Math.PI * 2; //full rotation
     this.context = context;
+
+    //Leah (Leah got help from GenAI with coding)
+    this.counter = 0;
+    this.r1 = 60; 
+    this.micVolume = 0;
+
   }
 
   display() {
@@ -21,9 +27,15 @@ class RectangularObj {
     this.context.strokeRect(this.x, this.y,this.width, this.height);
   }
 
+  //Leah
   update(){
-    //update freestyle
-   // this.x+=1;
-    //console.log("rectangle update")
+    let newSize = Math.sin(this.counter) * this.r1 + this.r1;
+    this.x = 30 + newSize;
+    this.counter += 0.03;
+
+    this.width = 30 + this.micVolume * 0.6;
+
+    this.fill_color= `hsl(${this.micVolume * 2}, 60%, 45%)`;
+    
 }
 }
