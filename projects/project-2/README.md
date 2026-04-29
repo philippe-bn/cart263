@@ -22,11 +22,10 @@ An interactive web experience built with Three.js. It explores the theme of fant
 - GPU Computation Renderer from 'three/addons/misc/GPUComputationRenderer.js';
 - Flocking behaviour informed by *The Nature of Code* by Daniel Schiffman, Creative Commons https://natureofcode.com/ 
 
-> Building upon *Aquarium* by Philippe Beauchemin, completed as Project 1 for CART 263
-> [See the Project 1 repo](https://github.com/philippe-bn/cart263/tree/main/projects/project-1)
-> [View Aquarium](https://philippe-bn.github.io/cart263/projects/project-1/)
-
-> *An early version of this project was Aquarium brought into Three.js*
+> Building upon *Aquarium* by Philippe Beauchemin, completed as Project 1 for CART 263  
+> [See the Project 1 repo](https://github.com/philippe-bn/cart263/tree/main/projects/project-1)  
+> [View Aquarium](https://philippe-bn.github.io/cart263/projects/project-1/)  
+> *An early version of this project was *Aquarium* brought into Three.js*
 > ![Screenshot](screen-grabs/ocean.png)
 
 ## License
